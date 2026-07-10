@@ -6,7 +6,7 @@
 
 ```bash
 cd /Users/huangyingcheng/Documents/Codex/2026-07-08/new-chat/outputs/project-os
-PATH="/Users/huangyingcheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:/Users/huangyingcheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin:$PATH" pnpm dev
+PATH="/Users/huangyingcheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:/Users/huangyingcheng/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:$PATH" pnpm dev
 ```
 
 開啟：
@@ -45,11 +45,11 @@ APP_USERNAME=project-os
 APP_PASSWORD=請使用長密碼
 GITHUB_TOKEN=GitHub fine-grained token
 GITHUB_REPOSITORY=yingchenghuang/project-os
-GITHUB_DATA_BRANCH=main
+GITHUB_DATA_BRANCH=project-data
 GITHUB_DATA_PATH=data/projects.json
 ```
 
-`GITHUB_TOKEN` 僅需該倉庫的 Contents 讀寫權限。啟用後，每次保存或匯入都會寫回 GitHub；介面透過即時事件與 30 秒校正刷新同步不同視窗的變更。
+`GITHUB_TOKEN` 僅需該倉庫的 Contents 讀寫權限。啟用後，每次保存或匯入都會寫回獨立的 `project-data` 分支，不會觸發網站重建；介面透過即時事件與 30 秒校正刷新同步不同視窗的變更。
 
 Notion 相關金鑰與 GitHub token 只能設定在部署平台的環境變數，不可提交到倉庫。
 
