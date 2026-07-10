@@ -20,7 +20,7 @@ services:
       - key: GITHUB_REPOSITORY
         value: yingchenghuang/project-os
       - key: GITHUB_DATA_BRANCH
-        value: main
+        value: project-data
       - key: GITHUB_DATA_PATH
         value: data/projects.json
       - key: NOTION_TOKEN
