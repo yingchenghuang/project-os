@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: project-os
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm build
+    startCommand: pnpm start
+    healthCheckPath: /api/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: APP_USERNAME
+        value: project-os
+      - key: APP_PASSWORD
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: GITHUB_REPOSITORY
+        value: yingchenghuang/project-os
+      - key: GITHUB_DATA_BRANCH
+        value: main
+      - key: GITHUB_DATA_PATH
+        value: data/projects.json
+      - key: NOTION_TOKEN
+        sync: false
+      - key: NOTION_PARENT_PAGE_ID
+        sync: false
+      - key: NOTION_DATABASE_ID
+        sync: false
