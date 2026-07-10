@@ -1,0 +1,708 @@
+:root {
+  --bg: #f7f6f1;
+  --surface: #ffffff;
+  --ink: #1a2e26;
+  --muted: #66746c;
+  --line: #e2e0d6;
+  --line-strong: #cbc6b6;
+  --blue: #2c63c8;
+  --blue-hover: #1f4fa8;
+  --gold: #b8860b;
+  --green: #2e8b57;
+  --red: #bd4b3d;
+  --warn: #ad7317;
+  --shadow: 0 18px 45px rgba(45, 55, 48, 0.1);
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 0;
+}
+
+.app {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 285px minmax(0, 1fr) 340px;
+}
+
+.side {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  border-right: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(10px);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.brand,
+.topbar,
+.actions,
+.projectMeta,
+.panelTitle,
+.inspectorHead,
+.notionState > div {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.brand strong {
+  display: block;
+  font-size: 22px;
+  line-height: 1.1;
+  letter-spacing: 1px;
+}
+
+.brand span,
+.listLabel,
+.inspectorHead span,
+.panelTitle,
+.metaField small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.iconButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.uploadBox {
+  border: 1.5px dashed var(--line-strong);
+  background: #fffdf8;
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 128px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease, transform 0.16s ease;
+}
+
+.uploadBox.large {
+  min-height: 180px;
+}
+
+.uploadBox.dragging {
+  border-color: var(--blue);
+  background: #eef4ff;
+  transform: translateY(-1px);
+}
+
+.uploadBox input {
+  display: none;
+}
+
+.uploadBox b {
+  font-size: 15px;
+}
+
+.uploadBox span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.projectList {
+  display: grid;
+  gap: 8px;
+  min-height: 0;
+  overflow: auto;
+}
+
+.projectItem {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) 16px;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.projectItem span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.projectItem:hover,
+.projectItem.on {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.statusBox {
+  margin-top: auto;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.statusBox.success {
+  color: var(--green);
+}
+
+.statusBox.error {
+  color: var(--red);
+}
+
+.statusBox.warning {
+  color: var(--warn);
+}
+
+.workspace {
+  min-width: 0;
+  padding: 22px 24px 80px;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 8px 0 18px;
+  background: linear-gradient(180deg, var(--bg) 72%, rgba(247, 246, 241, 0));
+}
+
+.titleInput {
+  width: min(100%, 720px);
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 30px;
+  font-weight: 900;
+  line-height: 1.15;
+  outline: none;
+}
+
+.summaryInput {
+  width: min(100%, 720px);
+  min-height: 58px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  resize: vertical;
+  line-height: 1.7;
+  outline: none;
+}
+
+.actions {
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.btn {
+  min-height: 40px;
+  border-radius: 8px;
+  padding: 0 14px;
+  background: var(--blue);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--blue-hover);
+}
+
+.btn.ghost {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.btn.ghost:hover {
+  border-color: var(--line-strong);
+}
+
+.btn:disabled {
+  opacity: 0.58;
+  cursor: wait;
+}
+
+.projectMeta {
+  display: grid;
+  grid-template-columns: 1.1fr 0.75fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.metaField,
+.progressBox {
+  min-width: 0;
+  min-height: 74px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.metaField {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: center;
+}
+
+.metaField span {
+  color: var(--gold);
+  grid-row: span 2;
+}
+
+.metaField input {
+  min-width: 0;
+  border: 0;
+  outline: none;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.progressBox {
+  display: grid;
+  align-content: center;
+  gap: 9px;
+}
+
+.progressBox div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.progressBox b {
+  color: var(--gold);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.progressBox i {
+  display: block;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.progressBox em {
+  display: block;
+  height: 100%;
+  background: var(--blue);
+  border-radius: inherit;
+  transition: width 0.18s ease;
+}
+
+.flowColumn {
+  display: grid;
+  gap: 12px;
+}
+
+.stepCard {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 14px;
+  cursor: pointer;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.stepCard.active {
+  border-color: rgba(44, 99, 200, 0.55);
+  box-shadow: var(--shadow);
+}
+
+.stepCard.done .stepNo {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+.stepRail {
+  display: flex;
+  justify-content: center;
+}
+
+.stepNo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: var(--surface);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.stepBody {
+  min-width: 0;
+}
+
+.stepHead {
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.stepHead h2 {
+  margin: 0 0 3px;
+  font-size: 18px;
+}
+
+.stepHead p,
+.stepHead span {
+  color: var(--muted);
+  margin: 0;
+  font-size: 13px;
+}
+
+.stepHead span {
+  max-width: 260px;
+  text-align: right;
+}
+
+.taskList {
+  display: grid;
+  gap: 7px;
+}
+
+.taskLine,
+.editableCheck {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  color: var(--ink);
+  font-size: 13.5px;
+}
+
+.taskLine input,
+.editableCheck input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--green);
+  margin-top: 3px;
+}
+
+.taskLine.checked span,
+.editableCheck.done textarea {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.stepCard pre {
+  white-space: pre-wrap;
+  color: var(--muted);
+  background: #faf9f4;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  margin: 12px 0 0;
+  font: inherit;
+  font-size: 12.5px;
+}
+
+.inspector {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: auto;
+  border-left: 1px solid var(--line);
+  background: #fcfbf7;
+  padding: 18px;
+}
+
+.inspectorHead {
+  justify-content: space-between;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 14px;
+}
+
+.inspectorHead strong {
+  display: block;
+  font-size: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.field span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.field input,
+.field textarea,
+.editableCheck textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  padding: 9px 10px;
+  outline: none;
+  resize: vertical;
+}
+
+.field textarea {
+  min-height: 82px;
+  line-height: 1.6;
+}
+
+.field input:focus,
+.field textarea:focus,
+.editableCheck textarea:focus,
+.metaField input:focus {
+  border-color: var(--blue);
+}
+
+.panelBlock {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  margin-top: 14px;
+  display: grid;
+  gap: 8px;
+}
+
+.panelTitle {
+  gap: 7px;
+  color: var(--ink);
+  font-weight: 900;
+  font-size: 13px;
+}
+
+.editableCheck textarea {
+  min-height: 38px;
+  line-height: 1.45;
+  overflow: hidden;
+}
+
+.notionState {
+  margin-top: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 13px;
+}
+
+.notionState > div {
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.notionState strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 16px;
+}
+
+.notionState p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.65;
+}
+
+.notionState a {
+  display: inline-flex;
+  margin-top: 8px;
+  color: var(--blue);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.notionState.synced {
+  border-color: rgba(46, 139, 87, 0.45);
+}
+
+.notionState.exported,
+.notionState.failed_exported {
+  border-color: rgba(184, 134, 11, 0.42);
+}
+
+.emptyShell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+}
+
+.emptyPanel {
+  width: min(560px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 24px;
+  display: grid;
+  gap: 14px;
+}
+
+.emptyPanel strong {
+  font-size: 24px;
+}
+
+.emptyPanel p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.spin {
+  animation: spin 0.85s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1120px) {
+  .app {
+    grid-template-columns: 250px minmax(0, 1fr);
+  }
+
+  .inspector {
+    position: static;
+    grid-column: 1 / -1;
+    height: auto;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 760px) {
+  .app {
+    display: block;
+  }
+
+  .side {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .workspace {
+    padding: 18px 14px 40px;
+  }
+
+  .topbar {
+    position: static;
+    display: grid;
+  }
+
+  .actions {
+    justify-content: stretch;
+  }
+
+  .actions .btn {
+    flex: 1;
+  }
+
+  .titleInput {
+    font-size: 24px;
+  }
+
+  .projectMeta {
+    grid-template-columns: 1fr;
+  }
+
+  .stepCard {
+    grid-template-columns: 42px minmax(0, 1fr);
+    padding: 12px;
+  }
+
+  .stepNo {
+    width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .stepHead {
+    display: grid;
+  }
+
+  .stepHead span {
+    max-width: none;
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
