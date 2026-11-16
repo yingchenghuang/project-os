@@ -11,6 +11,9 @@ from ezdxf.addons.drawing.config import BackgroundPolicy, ColorPolicy, Configura
 from ezdxf.addons.drawing.matplotlib import MatplotlibBackend
 
 src, out = sys.argv[1], sys.argv[2:]
+dpi = 200
+if out and out[-1].isdigit():
+    dpi = int(out.pop())
 bbox = None
 if "--crop" in out:
     i = out.index("--crop")
@@ -28,4 +31,4 @@ if bbox:
     ax.set_xlim(bbox[0], bbox[2])
     ax.set_ylim(bbox[1], bbox[3])
 for o in out:
-    fig.savefig(o, dpi=int(sys.argv[-1]) if o.endswith(".png") and sys.argv[-1].isdigit() else 200)
+    fig.savefig(o, dpi=dpi)
