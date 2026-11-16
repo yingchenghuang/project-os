@@ -352,6 +352,167 @@ button {
   transition: width 0.18s ease;
 }
 
+.designPanel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 16px;
+  margin-bottom: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.designHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.designHead h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.designHead p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.linkField {
+  display: grid;
+  gap: 5px;
+  flex: 1 1 280px;
+  max-width: 420px;
+  min-width: 0;
+}
+
+.linkField span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.linkField div {
+  display: flex;
+  gap: 6px;
+}
+
+.linkField input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  outline: none;
+  color: var(--ink);
+}
+
+.linkField input:focus {
+  border-color: var(--blue);
+}
+
+.linkField .btn {
+  text-decoration: none;
+}
+
+.schemeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+}
+
+.schemeCard {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-width: 0;
+}
+
+.schemeCard.chosen {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(44, 99, 200, 0.15);
+}
+
+.schemeTop {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.schemeTop strong {
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.chip {
+  flex-shrink: 0;
+  font-size: 11px;
+  border-radius: 999px;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+.chip.ok {
+  color: var(--green);
+  border-color: rgba(46, 139, 87, 0.4);
+  background: rgba(46, 139, 87, 0.07);
+}
+
+.chip.warn {
+  color: var(--warn);
+  border-color: rgba(173, 115, 23, 0.4);
+  background: rgba(173, 115, 23, 0.07);
+}
+
+.schemeCard p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.schemeCard small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.schemeCard .btn {
+  justify-self: start;
+  min-height: 34px;
+}
+
+.roomChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.roomChips span {
+  display: inline-flex;
+  gap: 6px;
+  align-items: baseline;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12.5px;
+  background: #faf9f4;
+}
+
+.roomChips b {
+  color: var(--muted);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
 .flowColumn {
   display: grid;
   gap: 12px;
