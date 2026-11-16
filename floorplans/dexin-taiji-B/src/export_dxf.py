@@ -21,6 +21,7 @@ LAYERS = {
     "A-EQPT": (30, "設備/管道間"), "A-PLNT": (82, "植栽"), "A-RAIL": (140, "欄杆"),
     "A-FLOR": (9, "地坪/鋪面"), "A-ANNO-TEXT": (7, "空間名稱/面積"), "A-ANNO-DIMS": (2, "尺寸標註"),
     "A-ANNO-SYMB": (7, "符號/指北"), "A-SHEET": (7, "圖框/圖說"),
+    "A-SECT": (7, "剖面切線/填色"), "A-SECT-LEVL": (1, "剖面高程線"),
 }
 TAG2LAYER = {"FURN": "A-FURN", "CASE": "A-CASE", "PFIX": "A-PFIX", "KITC": "A-KITC", "EQPT": "A-EQPT",
              "PLNT": "A-PLNT", "GLAZ": "A-GLAZ", "DOOR": "A-DOOR"}
@@ -359,7 +360,7 @@ def draw_sheet(msp):
         "圖說：",
         "1. 本圖依建商公開行銷平面圖逐像素量測重繪，標註尺寸（19,400 × 12,700 及左右側尺寸鏈）優先，其餘依圖面比例換算並取 50mm 模數。",
         "2. 原圖「主要空間尺度」表之主臥／次臥面寬（3,600～3,800）與總寬 19,400 及客餐廳 8,600 互相矛盾，本圖依圖面實際比例（約 4,450～4,525）。",
-        "3. 牆厚假設：外牆 300、內隔間 150；室內淨高 3,000；室內門高 2,100、大門 2,400、客廳落地門 2,700；窗台高依圖例標示。",
+        "3. 樓高（本層 FL 至上層 FL）3,500：樓板 150＋地坪 80，版底淨高 3,270。外牆 300、內隔間 150；室內門高 2,100、大門 2,400、客廳落地門 2,700。",
         "4. 傢俱與衛浴設備採市售常規尺寸，依原圖位置與方向配置。原圖主衛浴未繪馬桶、衛浴(次臥二)未繪淋浴，本圖照原圖不自行增設。",
         "5. 非建商正式施工圖；實際尺寸、結構及配置依建照核准圖說及現場丈量為準。",
     ]
@@ -384,6 +385,113 @@ def draw_sheet(msp):
     msp.add_line((tx0 + 3000, ty0), (tx0 + 3000, ty1), dxfattribs={"layer": L})
 
 
+# ------------------------------------------------------------------------------------------ sections
+SECTIONS = [  # name, cut axis, position, sheet origin (ox, oy), title
+    ("A-A", "y", 8620, (0, -17800), "A-A 剖面（Y = 8,620，向北看）"),
+    ("C-C", "y", 2650, (0, -25300), "C-C 剖面（Y = 2,650，向北看）"),
+    ("B-B", "x", 12300, (0, -32800), "B-B 剖面（X = 12,300，向西看）"),
+]
+
+
+def draw_section_marks(msp):
+    L = "A-ANNO-SYMB"
+    for name, axis, at, _, _ in SECTIONS:
+        tag = name[0]
+        if axis == "y":
+            for x0, x1, tx in ((-2600, -1900, -2250), (21300, 22000, 21650)):
+                e = msp.add_lwpolyline([(x0, at), (x1, at)], dxfattribs={"layer": L})
+                e.dxf.const_width = 60
+                msp.add_lwpolyline([(tx - 180, at + 120), (tx + 180, at + 120), (tx, at + 520)], close=True,
+                                   dxfattribs={"layer": L})
+                text(msp, tag, tx, at - 330, 330, L)
+        else:
+            for y0, y1, ty in ((-2600, -1900, -2250), (14650, 15350, 15000)):
+                e = msp.add_lwpolyline([(at, y0), (at, y1)], dxfattribs={"layer": L})
+                e.dxf.const_width = 60
+                msp.add_lwpolyline([(at - 120, ty - 180), (at - 120, ty + 180), (at - 520, ty)], close=True,
+                                   dxfattribs={"layer": L})
+                text(msp, tag, at + 330, ty, 330, L)
+
+
+def draw_sections(msp):
+    import numpy as np
+    import trimesh
+    from shapely.geometry import MultiLineString
+    from shapely.ops import linemerge, polygonize
+
+    import export_3d as E
+    from geom import triangles
+
+    L = "A-SHEET"
+    fx0, fy0, fx1, fy1 = -3500, -40500, 38500, -10800     # second A3 sheet @ 1:100
+    msp.add_lwpolyline([(fx0, fy0), (fx1, fy0), (fx1, fy1), (fx0, fy1)], close=True, dxfattribs={"layer": L})
+    msp.add_lwpolyline([(fx0 + 500, fy0 + 500), (fx1 - 500, fy0 + 500), (fx1 - 500, fy1 - 500), (fx0 + 500, fy1 - 500)],
+                       close=True, dxfattribs={"layer": L, "lineweight": 50})
+    text(msp, "B戶 剖面圖（樓高 3,500）  1:100 @A3  單位 mm", -2300, -12300, 450, L, TextEntityAlignment.LEFT)
+
+    objs = E.scene_objects(with_ceiling=True)
+    meshes = []
+    for obj in objs:
+        parts = [triangles(p) for p in obj["prims"]]
+        V = np.vstack([v for v, _ in parts])
+        offs = np.cumsum([0] + [len(v) for v, _ in parts[:-1]])
+        F = np.vstack([f + o for (_, f), o in zip(parts, offs)])
+        meshes.append((obj, trimesh.Trimesh(V, F, process=False)))
+
+    lay_of = {"FURN": "A-FURN", "CASE": "A-CASE", "PFIX": "A-PFIX", "KITC": "A-KITC", "EQPT": "A-EQPT",
+              "PLNT": "A-PLNT", "GLAZ": "A-GLAZ", "DOOR": "A-DOOR", "RAIL": "A-RAIL"}
+    for name, axis, at, (ox, oy), title in SECTIONS:
+        normal = [0, 1, 0] if axis == "y" else [1, 0, 0]
+        origin = [0, at, 0] if axis == "y" else [at, 0, 0]
+        k = 0 if axis == "y" else 1
+        width = 19400 if axis == "y" else 12700
+        for obj, mesh in meshes:
+            segs = trimesh.intersections.mesh_plane(mesh, normal, origin)
+            if len(segs) == 0:
+                continue
+            q = np.round(np.asarray(segs)[:, :, [k, 2]] * 2) / 2          # snap to 0.5 mm so loops close
+            q = q[np.any(q[:, 0] != q[:, 1], axis=1)]
+            if len(q) == 0:
+                continue
+            lines = MultiLineString([((a[0] + ox, a[1] + oy), (b[0] + ox, b[1] + oy)) for a, b in q])
+            merged = linemerge(lines)
+            structural = obj["tag"] in ("WALL", "COLS", "CLNG") or obj["name"] == "本層結構樓板"
+            layer = "A-SECT" if structural or obj["tag"] == "FLOR" else lay_of.get(obj["tag"], "A-FURN")
+            for ln in getattr(merged, "geoms", [merged]):
+                msp.add_lwpolyline(list(ln.coords), dxfattribs={"layer": layer})
+            if structural:
+                polys = [p for p in polygonize(merged) if p.area > 100]
+                if polys:
+                    add_poly(msp, unary_union(polys), "A-SECT", hatch_rgb=(70, 70, 70) if obj["tag"] != "CLNG"
+                             and obj["name"] != "本層結構樓板" else (125, 125, 125), outline=False)
+        # levels
+        for z, lab in ((0, "FL ±0"), (M.WALL_H, f"版底 +{M.WALL_H:,}"), (M.FLOOR_TO_FLOOR, f"上層 FL +{M.FLOOR_TO_FLOOR:,}")):
+            msp.add_line((ox - 300, oy + z), (ox + width + 300, oy + z),
+                         dxfattribs={"layer": "A-SECT-LEVL", "linetype": "DASHED", "ltscale": 6})
+            dy = 170 if z == M.FLOOR_TO_FLOOR else -170 if z == M.WALL_H else 0
+            text(msp, lab, ox + width + 450, oy + z + dy, 200, "A-SECT-LEVL", TextEntityAlignment.MIDDLE_LEFT)
+        base = -(M.FINISH_T + M.SLAB_T)
+        chain(msp, [oy + base, oy, oy + M.WALL_H, oy + M.FLOOR_TO_FLOOR], "y", ox - 900, ox - 100)
+        chain(msp, [oy, oy + M.FLOOR_TO_FLOOR], "y", ox - 1700, ox - 900)
+        text(msp, title + "  1:100（僅繪剖切線）", ox, oy - 1100, 330, L, TextEntityAlignment.LEFT)
+
+    rows = [("上層 FL", f"+{M.FLOOR_TO_FLOOR:,}"), ("上層地坪 / 樓板", f"{M.FINISH_T} / {M.SLAB_T}"),
+            ("版底（RC 淨高）", f"+{M.WALL_H:,}"), ("客廳落地拉門頂", "+2,700"), ("大門頂 / 窗頂", "+2,400"),
+            ("室內門頂", "+2,100"), ("窗台", "+900 / 1,050 / 1,200 / 1,500"), ("欄杆頂（戶外地坪 -50 起算）", "+1,100"),
+            ("本層 FL", "±0"), ("本層地坪 / 樓板底", f"-{M.FINISH_T} / -{M.FINISH_T + M.SLAB_T}")]
+    x0, y = 23500, -13600
+    text(msp, "樓高構成", x0, y, 360, L, TextEntityAlignment.LEFT)
+    for k2, v2 in rows:
+        y -= 560
+        text(msp, k2, x0, y, 230, L, TextEntityAlignment.LEFT)
+        text(msp, v2, x0 + 14000, y, 230, L, TextEntityAlignment.RIGHT)
+    y -= 800
+    for n in ["樓高依建築技術規則「樓層高度」定義：", "自室內地板面至其直上層地板面之高度。",
+              "若另作天花吊頂，室內淨高 = 版底 - 吊頂深度", "（例：吊頂 300 → 淨高約 2,970）。"]:
+        text(msp, n, x0, y, 220, L, TextEntityAlignment.LEFT)
+        y -= 420
+
+
 def build(path):
     doc = ezdxf.new("R2013", setup=True)
     setup(doc)
@@ -395,7 +503,9 @@ def build(path):
     draw_furniture(msp)
     draw_labels(msp)
     draw_dims(msp)
+    draw_section_marks(msp)
     draw_sheet(msp)
+    draw_sections(msp)
     doc.saveas(path)
     return doc
 

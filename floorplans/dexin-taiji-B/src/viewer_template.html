@@ -78,7 +78,7 @@
 <section class="sheet" aria-label="模型控制">
   <div>
     <h1>德鑫泰極 B戶 標準層</h1>
-    <div class="meta"><span>19,400 × 12,700 mm</span><span>淨高 3,000</span><span>依公開平面圖重繪</span></div>
+    <div class="meta"><span>19,400 × 12,700 mm</span><span>樓高 3,500（版底淨高 3,270）</span><span>依公開平面圖重繪</span></div>
   </div>
   <div>
     <div class="label">視角</div>
@@ -114,8 +114,9 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 const GLB_B64 = "%%GLB%%";
 const LAYERS = [
   ["WALL", "牆體"], ["COLS", "結構柱"], ["DOOR", "門"], ["GLAZ", "窗/玻璃"], ["FURN", "傢俱"],
-  ["CASE", "系統櫃"], ["PFIX", "衛浴"], ["KITC", "廚具"], ["PLNT", "植栽"], ["RAIL", "欄杆"], ["EQPT", "設備"], ["FLOR", "地坪"],
+  ["CASE", "系統櫃"], ["PFIX", "衛浴"], ["KITC", "廚具"], ["PLNT", "植栽"], ["RAIL", "欄杆"], ["EQPT", "設備"], ["FLOR", "地坪"], ["CLNG", "上層樓板"],
 ];
+const OFF = new Set(["CLNG"]);
 const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
 const stage = document.getElementById("stage");
@@ -157,7 +158,7 @@ function applyTheme() {
 
 const VIEWS = {
   se: { eye: [23.2, 22, 13.0], target: [7.4, 0, -5.9], fov: 40 },
-  nw: { eye: [-8.5, 21, -24.5], target: [7.2, 0, -5.9], fov: 40 },
+  nw: { eye: [-10.5, 24, -28.5], target: [8.6, 0, -5.4], fov: 40 },
   top: { eye: [7.6, 46, -6.34], target: [7.6, 0, -6.35], fov: 30 },
   living: { eye: [6.3, 1.6, -4.5], target: [10.6, 1.15, -11.2], fov: 64 },
   master: { eye: [4.95, 1.75, -6.65], target: [1.4, 0.55, -9.2], fov: 64 },
@@ -187,7 +188,7 @@ for (const [k, zh] of LAYERS) {
   const lab = document.createElement("label");
   lab.className = "chip";
   lab.htmlFor = id;
-  lab.innerHTML = `<input type="checkbox" id="${id}" checked> ${zh}`;
+  lab.innerHTML = `<input type="checkbox" id="${id}" ${OFF.has(k) ? "" : "checked"}> ${zh}`;
   lab.querySelector("input").addEventListener("change", (e) => groups[k].forEach((o) => (o.visible = e.target.checked)));
   layerRow.appendChild(lab);
 }
@@ -223,6 +224,7 @@ new GLTFLoader().parse(bin.buffer, "", (gltf) => {
   edgeMat.clippingPlanes = [];
   materials.add(edgeMat);
   scene.add(root);
+  OFF.forEach((k) => groups[k].forEach((o) => (o.visible = false)));
   document.getElementById("loading").hidden = true;
   applyTheme();
   resize();

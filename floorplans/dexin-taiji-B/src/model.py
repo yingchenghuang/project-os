@@ -24,8 +24,11 @@ from geom import (X, Y, Z, Prism, box, circle_poly, cyl, cyl_axis, ellipse, elev
                   stadium, tmat, xyprism)
 
 PROJECT = "德鑫泰極 B戶 標準層 (5F–13F)"
-WALL_H = 3000          # finished floor to slab soffit
-WALL_BASE = -80        # walls start below finish so floors tuck under them
+FLOOR_TO_FLOOR = 3500  # 樓高：本層 FL 至上層 FL（建築技術規則「樓層高度」定義）
+SLAB_T = 150           # RC slab
+FINISH_T = 80          # screed + floor finish
+WALL_H = FLOOR_TO_FLOOR - FINISH_T - SLAB_T   # 3,270 = finished floor to slab soffit (clear height)
+WALL_BASE = -FINISH_T  # walls start below finish so floors tuck under them
 EXT_T = 300
 INT_T = 150
 FRAME = 40             # door frame / jamb width

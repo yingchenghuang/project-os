@@ -42,13 +42,14 @@ MATERIALS = {  # name: (rgb, alpha, 中文)
     "trunk": ((98, 72, 52), 1.0, "樹幹"), "soil": ((92, 72, 54), 1.0, "土壤"),
     "louver": ((92, 94, 98), 1.0, "百葉"), "concrete_light": ((196, 194, 188), 1.0, "清水模"),
     "tile_dark": ((150, 150, 148), 1.0, "淋浴地磚"), "ceiling": ((250, 250, 250), 1.0, "天花板"),
+    "slab_finish": ((205, 200, 192), 1.0, "上層地坪"),
 }
 
 TAGS = {  # key: SketchUp tag / DXF layer name
     "WALL": "A-WALL 牆體", "COLS": "A-COLS 結構柱", "FLOR": "A-FLOR 地坪", "DOOR": "A-DOOR 門",
     "GLAZ": "A-GLAZ 窗與玻璃", "RAIL": "A-RAIL 欄杆", "FURN": "A-FURN 傢俱", "CASE": "A-CASE 系統櫃",
     "PFIX": "A-PFIX 衛浴設備", "KITC": "A-KITC 廚具", "EQPT": "A-EQPT 設備", "PLNT": "A-PLNT 植栽",
-    "CLNG": "A-CLNG 天花板(預設隱藏)",
+    "CLNG": "A-SLAB-UP 上層樓板 FL+3500(預設隱藏)",
 }
 
 
@@ -89,10 +90,10 @@ def walls():
 
 def floors():
     objs = []
-    every = [p for _, p, *_ in M.ROOMS] + [M.wall_rect(w) for w in M.WALLS] + list(M.COLUMNS.values())
+    every = [p for _, p, *_ in M.ROOMS] + [M.wall_rect(w) for w in M.WALLS] + list(M.COLUMNS.values()) + list(M.SHAFTS.values())
     slab = unary_union(every).buffer(0)
     parts = [slab] if slab.geom_type == "Polygon" else list(slab.geoms)
-    objs.append(dict(name="結構樓板", tag="FLOR", prims=[xyprism(p, -250, -80, "slab", plan=False) for p in parts]))
+    objs.append(dict(name="本層結構樓板", tag="FLOR", prims=[xyprism(p, -(M.FINISH_T + M.SLAB_T), -M.FINISH_T, "slab", plan=False) for p in parts]))
     for name, poly, lp, mat, outdoor in M.ROOMS:
         top = -50 if outdoor else 0
         parts = [poly] if poly.geom_type == "Polygon" else list(poly.geoms)
@@ -101,10 +102,14 @@ def floors():
 
 
 def ceiling():
-    indoor = unary_union([p for _, p, _, _, out in M.ROOMS if not out] +
-                         [M.wall_rect(w) for w, v in M.WALLS.items() if v[4] == "int"])
-    parts = [indoor] if indoor.geom_type == "Polygon" else list(indoor.geoms)
-    return [dict(name="天花板", tag="CLNG", prims=[xyprism(p.buffer(0), M.WALL_H, M.WALL_H + 120, "ceiling") for p in parts])]
+    """Upper floor slab (soffit = clear height, top finish = FL + FLOOR_TO_FLOOR). Hidden by default."""
+    every = [p for _, p, *_ in M.ROOMS] + [M.wall_rect(w) for w in M.WALLS] + list(M.COLUMNS.values()) + list(M.SHAFTS.values())
+    slab = unary_union(every).buffer(0)
+    parts = [slab] if slab.geom_type == "Polygon" else list(slab.geoms)
+    z0 = M.WALL_H
+    prims = [xyprism(p, z0, z0 + M.SLAB_T, "slab", plan=False) for p in parts]
+    prims += [xyprism(p, z0 + M.SLAB_T, M.FLOOR_TO_FLOOR, "slab_finish", plan=False) for p in parts]
+    return [dict(name="上層樓板 (版底+3,270／上層FL+3,500)", tag="CLNG", prims=prims)]
 
 
 def openings():
@@ -493,11 +498,81 @@ def write_rb(objs, path):
     Path(path).write_text(RUBY.replace("%%JSON%%", js), encoding="utf-8")
 
 
+# ------------------------------------------------------------------------------------------ OBJ + MTL
+def _safe(s):
+    return "".join(ch if ch.isalnum() or ch in "-_()" else "_" for ch in s)
+
+
+def write_obj(objs, path):
+    """Wavefront OBJ in metres + MTL. One `o` per object (prefixed with its layer code), `usemtl` per material."""
+    path = Path(path)
+    mtl = path.with_suffix(".mtl")
+    lines = [f"# 德鑫泰極 B戶 標準層 — units: metres, Z-up (Blender/Rhino: import with 'Z up')",
+             f"mtllib {mtl.name}"]
+    base = 1
+    for obj in objs:
+        by_mat = {}
+        for p in obj["prims"]:
+            V, F = triangles(p)
+            by_mat.setdefault(p.mat, []).append((V, F))
+        lines.append(f"o {TAGS[obj['tag']].split()[0]}__{_safe(obj['name'])}")
+        for mat_name, chunks in by_mat.items():
+            lines.append(f"usemtl {mat_name}")
+            for V, F in chunks:
+                lines += [f"v {x / 1000:.4f} {y / 1000:.4f} {z / 1000:.4f}" for x, y, z in V]
+                lines += [f"f {a + base} {b + base} {c + base}" for a, b, c in F]
+                base += len(V)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    m = []
+    for name, (rgb, alpha, zh) in MATERIALS.items():
+        r, g, b = (v / 255 for v in rgb)
+        m += [f"newmtl {name}", f"# {zh}", f"Kd {r:.4f} {g:.4f} {b:.4f}", f"Ka {r * .2:.4f} {g * .2:.4f} {b * .2:.4f}",
+              "Ks 0.0500 0.0500 0.0500", f"d {alpha:.2f}", "illum 2", ""]
+    mtl.write_text("\n".join(m), encoding="utf-8")
+
+
+# ------------------------------------------------------------------------------------------ 3D DXF
+def write_dxf3d(objs, path):
+    """3D CAD model: one POLYFACE mesh per object+material (opens in AutoCAD, Rhino, SketchUp Pro, Revit)."""
+    import ezdxf
+    from ezdxf import colors, units
+
+    doc = ezdxf.new("R2013", setup=True)
+    doc.units = units.MM
+    doc.header["$INSUNITS"] = 4
+    aci = {"WALL": 7, "COLS": 8, "FLOR": 9, "DOOR": 3, "GLAZ": 4, "RAIL": 140, "FURN": 30, "CASE": 5,
+           "PFIX": 6, "KITC": 6, "EQPT": 30, "PLNT": 82, "CLNG": 9}
+    for k, name in TAGS.items():
+        code = name.split()[0]
+        lay = doc.layers.add(code, color=aci.get(k, 7))
+        lay.description = name
+        if k == "CLNG":
+            lay.off()
+    msp = doc.modelspace()
+    for obj in objs:
+        layer = TAGS[obj["tag"]].split()[0]
+        by_mat = {}
+        for p in obj["prims"]:
+            V, F = triangles(p)
+            by_mat.setdefault(p.mat, []).append((V, F))
+        for mat_name, chunks in by_mat.items():
+            pf = msp.add_polyface(dxfattribs={"layer": layer})
+            pf.rgb = MATERIALS[mat_name][0]
+            faces = []
+            for V, F in chunks:
+                faces += [[tuple(map(float, V[i])) for i in tri] for tri in F]
+            pf.append_faces(faces, dxfattribs={"layer": layer})
+            pf.optimize()
+    doc.saveas(str(path))
+
+
 if __name__ == "__main__":
     outdir = Path(sys.argv[1] if len(sys.argv) > 1 else "../output")
-    objs = scene_objects()
-    write_rb(scene_objects(with_ceiling=True), outdir / "DexinTaiji_B_sketchup.rb")
+    objs = scene_objects(with_ceiling=True)        # upper slab included as its own (hidden) layer/group
+    write_rb(objs, outdir / "DexinTaiji_B_sketchup.rb")
     write_dae(objs, outdir / "DexinTaiji_B_3D.dae")
     write_glb(objs, outdir / "DexinTaiji_B_3D.glb")
+    write_obj(objs, outdir / "DexinTaiji_B_3D_m.obj")
+    write_dxf3d(objs, outdir / "DexinTaiji_B_3D.dxf")
     ntri = sum(len(triangles(p)[1]) for o in objs for p in o["prims"])
     print("objects", len(objs), "prims", sum(len(o["prims"]) for o in objs), "triangles", ntri)
