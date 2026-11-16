@@ -282,6 +282,14 @@ function App() {
           </div>
         </section>
 
+        {project.design ? (
+          <DesignPanel
+            project={project}
+            onSelect={(id) => updateProject({ selectedScheme: project.selectedScheme === id ? "" : id })}
+            onLink={(workbenchUrl) => updateProject({ design: { ...project.design, workbenchUrl } })}
+          />
+        ) : null}
+
         <section className="flowColumn">
           {project.steps.map((step, index) => (
             <StepCard
@@ -460,6 +468,74 @@ function StepCard({ step, index, active, onSelect, onToggle, onTaskToggle }) {
         {step.notes ? <pre>{step.notes}</pre> : null}
       </div>
     </article>
+  );
+}
+
+function DesignPanel({ project, onSelect, onLink }) {
+  const design = project.design;
+  const link = /^https:\/\//.test(design.workbenchUrl || "") ? design.workbenchUrl : "";
+  return (
+    <section className="designPanel" aria-label="空間與方案">
+      <div className="designHead">
+        <div>
+          <h2>空間與方案</h2>
+          <p>
+            {design.draftId} {design.revision}｜{design.rooms.length} 個空間・{design.doors} 樘門・{design.windows} 組窗・
+            {design.pending} 項待確認
+          </p>
+        </div>
+        <label className="linkField">
+          <span>空間設計工作台連結</span>
+          <div>
+            <input
+              value={design.workbenchUrl || ""}
+              placeholder="https://claude.ai/artifact/…"
+              onChange={(event) => onLink(event.target.value.trim())}
+            />
+            {link ? (
+              <a className="btn ghost" href={link} target="_blank" rel="noreferrer">
+                開啟
+              </a>
+            ) : null}
+          </div>
+        </label>
+      </div>
+      {project.schemes?.length ? (
+        <div className="schemeGrid">
+          {project.schemes.map((scheme) => {
+            const chosen = scheme.id === project.selectedScheme;
+            return (
+              <article key={scheme.id} className={`schemeCard ${chosen ? "chosen" : ""}`}>
+                <div className="schemeTop">
+                  <strong>{scheme.name}</strong>
+                  <span className={scheme.conflicts ? "chip warn" : "chip ok"}>
+                    {scheme.conflicts ? `${scheme.conflicts} 項衝突` : "通過檢核"}
+                  </span>
+                </div>
+                <p>{scheme.concept}</p>
+                <small>
+                  {scheme.itemCount} 件家具櫃體{scheme.keepFixed ? "・保留衛浴廚具" : ""}
+                </small>
+                <button className={chosen ? "btn" : "btn ghost"} onClick={() => onSelect(scheme.id)}>
+                  {chosen ? <Check size={16} /> : null}
+                  {chosen ? "已選定採用" : "選定這個方案"}
+                </button>
+              </article>
+            );
+          })}
+        </div>
+      ) : null}
+      {design.rooms.length ? (
+        <div className="roomChips">
+          {design.rooms.map((room, index) => (
+            <span key={`${room.name}-${index}`}>
+              {room.name}
+              <b>{room.area} ㎡</b>
+            </span>
+          ))}
+        </div>
+      ) : null}
+    </section>
   );
 }
 

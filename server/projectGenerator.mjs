@@ -139,6 +139,147 @@ export function generateProjectFromText(text, sourceFile = "uploaded-plan") {
   };
 }
 
+const INTERIOR_STEPS = [
+  { title: "現場複丈與圖面核定", focus: "牆位、柱位、門窗與圖面尺寸矛盾", flow: "帶圖到現場 → 逐項複丈 → 回填工作台重新出圖" },
+  { title: "需求訪談與方案選定", focus: "生活型態、收納、預算與方案取捨", flow: "訪談業主 → 比較配置方案 → 簽認採用方案" },
+  { title: "設計深化", focus: "平面定案、天花、燈光、插座、立面與材質", flow: "定平面 → 展開天花與立面 → 選材與色彩" },
+  { title: "施工圖與圖說", focus: "平面、門窗表、水電、天花、立面與大樣", flow: "出圖 → 交叉核對 → 匯出 DXF／Rhino／SketchUp" },
+  { title: "估價與發包", focus: "工項數量、單價、比價與合約", flow: "列工項 → 廠商比價 → 簽約與付款節點" },
+  { title: "施工與監造", focus: "裝修申請、工序、品質與變更紀錄", flow: "申請 → 拆除保護 → 水電泥作 → 木作油漆 → 系統櫃" },
+  { title: "驗收與交屋", focus: "缺失改善、清潔、保固與文件", flow: "初驗 → 改善複驗 → 細清 → 交屋" },
+];
+
+export function isWorkbenchProject(value) {
+  return Boolean(value && value.format === "hansun-space" && value.project && value.scene);
+}
+
+/* A project exported from the 空間設計工作台 becomes an interior-design delivery plan: its pending items become site-survey tasks and its layout schemes become the options to sign off. */
+export function generateInteriorProject(payload, sourceFile = "workbench-project.json") {
+  const source = payload.project || {};
+  const scene = payload.scene || {};
+  const draft = source.draft || {};
+  const text = (value, max = 160) => String(value ?? "").trim().slice(0, max);
+  const walls = Array.isArray(scene.walls) ? scene.walls : [];
+  const doors = Array.isArray(scene.doors) ? scene.doors.length : 0;
+  const windows = walls.filter((wall) => wall && wall.windowH).length;
+  const rooms = (Array.isArray(draft.rooms) ? draft.rooms : []).map((room) => ({
+    name: text(room.name, 40) || "空間",
+    area: Math.round(polygonArea(room.polygon) * 10) / 10,
+  }));
+  const totalArea = Math.round(rooms.reduce((sum, room) => sum + room.area, 0) * 10) / 10;
+  const wetRooms = rooms.filter((room) => /衛|浴/.test(room.name)).length;
+  const pending = (Array.isArray(draft.pending) ? draft.pending : []).map((item) => text(item, 240)).filter(Boolean);
+  const schemes = (Array.isArray(source.schemes) ? source.schemes : []).slice(0, 8).map((scheme, index) => ({
+    id: text(scheme.id, 30) || `S${index + 1}`,
+    name: text(scheme.name, 60) || `方案 ${index + 1}`,
+    concept: text(scheme.concept, 600),
+    notes: (Array.isArray(scheme.notes) ? scheme.notes : []).map((note) => text(note, 200)).filter(Boolean),
+    itemCount: Array.isArray(scheme.items) ? scheme.items.length : 0,
+    conflicts: Array.isArray(scheme.conflicts) ? scheme.conflicts.length : 0,
+    keepFixed: scheme.keepFixed !== false,
+  }));
+  const title = text(source.name, 72) || text(draft.id, 30) || "室內設計專案";
+  const schemeTask = (scheme) => `比較「${scheme.name}」：${scheme.itemCount} 件家具櫃體，${scheme.conflicts ? `${scheme.conflicts} 項配置衝突待修` : "已通過配置檢核"}`;
+  const taskGroups = [
+    [...pending.map((item) => `核對：${item}`), "確認結構牆與柱位，不可拆除範圍標示在圖上", "依現場尺寸更新工作台並重新出圖"],
+    ["確認家庭成員、作息、收納量與預算區間", ...schemes.map(schemeTask), schemes.length ? "業主簽認採用方案" : "在工作台產生並比較配置方案"],
+    ["依採用方案定案平面配置", "天花高度、燈具與間接照明配置", "插座、開關、弱電與空調點位", "主要材質、色彩與五金計畫"],
+    [`平面配置圖與門窗表（${doors} 樘門、${windows} 組窗）`, "水電配置圖與給排水位置", "天花板圖", "主要立面與櫃體大樣", "匯出 DXF／Rhino／SketchUp 給繪圖與廠商"],
+    ["依採用方案列工項與數量", "木作、系統櫃、水電、泥作、油漆分項估價", "至少三家廠商比價", "簽訂工程合約與付款節點"],
+    ["向管委會申請裝修並繳保證金", "確認是否需申請室內裝修許可", "拆除與公共區域保護", "水電配管、試水試壓", wetRooms ? `衛浴防水（${wetRooms} 間）與泥作` : "泥作與防水", "木作、油漆、系統櫃進場", "設計變更逐項紀錄並請業主簽認"],
+    ["初驗缺失清單", "缺失改善與複驗", "細清與交屋", "保固書、竣工圖與設備說明交付"],
+  ];
+  const notesFor = [
+    [draft.scaleBasis, draft.unitNote].map((item) => text(item, 300)).filter(Boolean).join("\n"),
+    schemes.map((scheme) => `${scheme.name}\n${scheme.concept}`).join("\n\n"),
+    rooms.length ? `空間：${rooms.map((room) => `${room.name} 約 ${room.area} ㎡`).join("、")}` : "",
+    "",
+    "",
+    "",
+    "",
+  ];
+  const steps = INTERIOR_STEPS.map((step, index) => ({
+    id: `step-${index}`,
+    number: String(index).padStart(2, "0"),
+    title: step.title,
+    focus: step.focus,
+    flow: step.flow,
+    done: false,
+    tasks: taskGroups[index].map((taskText, taskIndex) => ({ id: `task-${index}-${taskIndex}`, text: taskText, done: false })),
+    notes: notesFor[index],
+    prompts: [],
+  }));
+  const selected = schemes.some((scheme) => scheme.id === source.activeScheme) ? source.activeScheme : "";
+  return {
+    id: crypto.randomUUID(),
+    kind: "interior",
+    title,
+    subtitle: "由空間設計工作台專案匯入",
+    sourceFile,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    status: "draft",
+    deadline: "待補",
+    budget: "待補",
+    owner: "業主（待補）",
+    tags: ["室內設計", "住宅", schemes.length ? "方案比較" : "平面重繪"].slice(0, 4),
+    summary: `${title}：${rooms.length} 個空間、${doors} 樘門、${windows} 組窗${schemes.length ? `，${schemes.length} 個配置方案待選定` : ""}。圖面為 ${text(draft.id, 20) || "重繪"} ${text(draft.revision, 10) || "R0"} 初稿，${pending.length} 項待現場確認。`,
+    extracted: {
+      deadlines: [],
+      budgetLines: totalArea ? [`各空間合計約 ${totalArea} ㎡（圖比估算，含陽台）`] : [],
+      contacts: [],
+      requirements: pending,
+    },
+    steps,
+    checklist: [
+      "現場尺寸複丈完成並回填工作台",
+      "業主簽認採用方案",
+      "施工圖、門窗表與估價工項一致",
+      "管委會裝修申請與保證金完成",
+      "保固書與竣工圖交付",
+    ].map((itemText, index) => ({ id: `ck-${index}`, text: itemText, done: false })),
+    schemes,
+    selectedScheme: selected,
+    design: {
+      source: "hansun-space",
+      draftId: text(draft.id, 30),
+      revision: text(draft.revision, 10),
+      rooms,
+      doors,
+      windows,
+      furniture: Array.isArray(scene.furniture) ? scene.furniture.length : 0,
+      pending: pending.length,
+      workbenchUrl: "",
+    },
+    notion: { status: "not_synced", url: "", lastSyncedAt: "", message: "尚未同步。" },
+  };
+}
+
+function polygonArea(points) {
+  if (!Array.isArray(points) || points.length < 3) return 0;
+  let sum = 0;
+  points.forEach((point, index) => {
+    const next = points[(index + 1) % points.length];
+    sum += Number(point[0]) * Number(next[1]) - Number(next[0]) * Number(point[1]);
+  });
+  return Math.abs(sum) / 2 / 10000;
+}
+
+function schemeLines(project) {
+  if (!project.schemes?.length) return [];
+  return [
+    "",
+    "## 配置方案",
+    ...project.schemes.flatMap((scheme) => [
+      "",
+      `### ${scheme.id === project.selectedScheme ? "【採用】" : ""}${scheme.name}`,
+      `${scheme.itemCount} 件家具櫃體｜${scheme.conflicts ? `${scheme.conflicts} 項衝突` : "通過配置檢核"}`,
+      scheme.concept || "",
+      ...(scheme.notes || []).map((note) => `- ${note}`),
+    ]),
+  ];
+}
+
 export function projectToMarkdown(project) {
   const doneCount = project.steps.filter((step) => step.done).length;
   const lines = [
@@ -160,6 +301,7 @@ export function projectToMarkdown(project) {
     ...sectionList("經費", project.extracted?.budgetLines),
     ...sectionList("聯絡與地址", project.extracted?.contacts),
     ...sectionList("限制與檢核", project.extracted?.requirements),
+    ...schemeLines(project),
     "",
     "## 專案流程",
     ...project.steps.flatMap((step) => [
@@ -192,8 +334,16 @@ export function projectToNotionBlocks(project) {
     ...listGroup("時程", project.extracted?.deadlines),
     ...listGroup("經費", project.extracted?.budgetLines),
     ...listGroup("限制與檢核", project.extracted?.requirements),
-    heading(2, "專案流程"),
   ];
+
+  if (project.schemes?.length) {
+    blocks.push(heading(2, "配置方案"));
+    for (const scheme of project.schemes) {
+      blocks.push(heading(3, `${scheme.id === project.selectedScheme ? "【採用】" : ""}${scheme.name}`));
+      blocks.push(paragraph(`${scheme.itemCount} 件家具櫃體｜${scheme.conflicts ? `${scheme.conflicts} 項衝突` : "通過配置檢核"}\n${scheme.concept || ""}`));
+    }
+  }
+  blocks.push(heading(2, "專案流程"));
 
   for (const step of project.steps || []) {
     blocks.push(heading(3, `${step.number}｜${step.title}`));

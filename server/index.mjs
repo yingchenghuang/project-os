@@ -9,7 +9,9 @@ import mammoth from "mammoth";
 import { createServer as createViteServer } from "vite";
 import {
   createSeedProject,
+  generateInteriorProject,
   generateProjectFromText,
+  isWorkbenchProject,
   projectToMarkdown,
   projectToNotionBlocks,
 } from "./projectGenerator.mjs";
@@ -74,8 +76,11 @@ app.get("/api/projects/:id", async (req, res) => {
 
 app.post("/api/import", upload.single("plan"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "missing_file" });
-  const parsed = await readUploadedText(req.file);
-  const project = generateProjectFromText(parsed.text, req.file.originalname);
+  const workbench = readWorkbenchProject(req.file);
+  const parsed = workbench ? { text: "", warnings: [] } : await readUploadedText(req.file);
+  const project = workbench
+    ? generateInteriorProject(workbench, req.file.originalname)
+    : generateProjectFromText(parsed.text, req.file.originalname);
   project.importWarnings = parsed.warnings;
   const projects = await readProjects({ includeSeed: false });
   projects.unshift(project);
@@ -171,6 +176,16 @@ const host = process.env.HOST || "0.0.0.0";
 app.listen(port, host, () => {
   console.log(`PROJECT OS running at http://${host}:${port}/`);
 });
+
+function readWorkbenchProject(file) {
+  if (path.extname(file.originalname || "").toLowerCase() !== ".json") return null;
+  try {
+    const value = JSON.parse(file.buffer.toString("utf8"));
+    return isWorkbenchProject(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
 
 async function readUploadedText(file) {
   const ext = path.extname(file.originalname || "").toLowerCase();
