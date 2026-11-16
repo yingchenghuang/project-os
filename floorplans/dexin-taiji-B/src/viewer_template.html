@@ -1,0 +1,240 @@
+<title>德鑫泰極 B戶 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: full-bleed model canvas, one floating drafting-sheet panel top-left, scale strip bottom-left */
+  :root {
+    --bg: #e9ecea;          /* drafting table */
+    --panel: #fbfbf9;
+    --fg: #1c2124;
+    --muted: #5f686d;
+    --line: #c9cfcc;
+    --accent: #2c6a86;      /* blueprint steel */
+    --accent-fg: #ffffff;
+    --edge: #39424a;
+    --font-text: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+    --font-data: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181a; --panel: #1d2225; --fg: #e4e8e8; --muted: #9aa4a8; --line: #343c40;
+      --accent: #7fb7d2; --accent-fg: #0f1416; --edge: #0b0e10; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181a; --panel: #1d2225; --fg: #e4e8e8; --muted: #9aa4a8; --line: #343c40;
+    --accent: #7fb7d2; --accent-fg: #0f1416; --edge: #0b0e10; color-scheme: dark;
+  }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-text); overflow: hidden; }
+  #stage { position: fixed; inset: 0; }
+  #stage canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+  .sheet {
+    position: fixed;
+    top: calc(12px + env(safe-area-inset-top, 0px));
+    left: max(16px, env(safe-area-inset-left, 0px));
+    width: min(340px, calc(100% - 32px));
+    background: var(--panel); border: 1px solid var(--line); border-radius: 4px;
+    padding: 14px 16px 12px; display: grid; gap: 12px;
+    box-shadow: 0 6px 24px rgb(0 0 0 / .08);
+  }
+  .sheet h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: .02em; text-wrap: balance; }
+  .meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-family: var(--font-data); font-size: 11.5px; color: var(--muted);
+          font-variant-numeric: tabular-nums; }
+  .label { font-size: 11px; color: var(--muted); letter-spacing: .12em; margin-bottom: 6px; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; }
+  button.view, label.chip {
+    font: 500 12.5px/1 var(--font-text); color: var(--fg); background: transparent;
+    border: 1px solid var(--line); border-radius: 3px; padding: 7px 10px; cursor: pointer;
+  }
+  button.view:hover, label.chip:hover { border-color: var(--accent); }
+  button.view[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  button:focus-visible, label.chip:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+  label.chip { display: inline-flex; align-items: center; gap: 6px; user-select: none; }
+  label.chip input { margin: 0; accent-color: var(--accent); }
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12.5px; }
+  .foot { font-size: 11.5px; color: var(--muted); line-height: 1.6; border-top: 1px solid var(--line); padding-top: 10px; }
+  .foot code { font-family: var(--font-data); font-size: 11px; }
+  details summary { cursor: pointer; font-size: 12px; color: var(--muted); list-style: none; }
+  details summary::-webkit-details-marker { display: none; }
+  .scale {
+    position: fixed; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); right: max(16px, env(safe-area-inset-right, 0px));
+    font-family: var(--font-data); font-size: 11px; color: var(--muted); background: var(--panel);
+    border: 1px solid var(--line); border-radius: 3px; padding: 6px 9px; font-variant-numeric: tabular-nums;
+  }
+  #loading[hidden] { display: none; }
+  #loading { position: fixed; inset: 0; display: grid; place-items: center; font-size: 13px; color: var(--muted); pointer-events: none; }
+  @media (max-width: 520px) {
+    .sheet { top: auto; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); padding: 12px; gap: 10px; }
+    .sheet .collapsible:not([open]) .body { display: none; }
+    .scale { top: calc(12px + env(safe-area-inset-top, 0px)); bottom: auto; }
+  }
+</style>
+
+<div id="stage"></div>
+<div id="loading">載入模型中…</div>
+
+<section class="sheet" aria-label="模型控制">
+  <div>
+    <h1>德鑫泰極 B戶 標準層</h1>
+    <div class="meta"><span>19,400 × 12,700 mm</span><span>淨高 3,000</span><span>依公開平面圖重繪</span></div>
+  </div>
+  <div>
+    <div class="label">視角</div>
+    <div class="row" id="views">
+      <button class="view" data-view="se" aria-pressed="true">東南鳥瞰</button>
+      <button class="view" data-view="nw" aria-pressed="false">西北鳥瞰</button>
+      <button class="view" data-view="top" aria-pressed="false">平面俯視</button>
+      <button class="view" data-view="living" aria-pressed="false">客廳</button>
+      <button class="view" data-view="master" aria-pressed="false">主臥</button>
+    </div>
+  </div>
+  <details class="collapsible" open>
+    <summary>圖層與剖切</summary>
+    <div class="body" style="display:grid;gap:10px;margin-top:8px">
+      <div class="row" id="layers"></div>
+      <div class="toggle-row">
+        <label class="chip" for="cut"><input type="checkbox" id="cut"> 1,500 高水平剖切</label>
+      </div>
+      <div class="foot">SketchUp：Ruby Console 執行 <code>load '…/DexinTaiji_B_sketchup.rb'</code>，或 檔案 → 匯入 <code>DexinTaiji_B_3D.dae</code>。拖曳旋轉、右鍵平移、滾輪縮放。</div>
+    </div>
+  </details>
+</section>
+<div class="scale" id="scale">X 東 · Y 北 · 單位 mm</div>
+
+<script type="importmap">
+{ "imports": { "three": "%%THREE%%/build/three.module.js", "three/addons/": "%%THREE%%/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+const GLB_B64 = "%%GLB%%";
+const LAYERS = [
+  ["WALL", "牆體"], ["COLS", "結構柱"], ["DOOR", "門"], ["GLAZ", "窗/玻璃"], ["FURN", "傢俱"],
+  ["CASE", "系統櫃"], ["PFIX", "衛浴"], ["KITC", "廚具"], ["PLNT", "植栽"], ["RAIL", "欄杆"], ["EQPT", "設備"], ["FLOR", "地坪"],
+];
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+const stage = document.getElementById("stage");
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.localClippingEnabled = true;
+stage.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, 1, 0.05, 400);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.maxPolarAngle = Math.PI * 0.495;
+
+scene.add(new THREE.HemisphereLight(0xf4f6f8, 0x8a8478, 1.35));
+const sun = new THREE.DirectionalLight(0xfff6ea, 1.9);
+sun.position.set(-6, 26, 18);
+sun.target.position.set(9.7, 0, -6.35);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 70 });
+sun.shadow.bias = -0.0004;
+scene.add(sun, sun.target);
+
+const cut = new THREE.Plane(new THREE.Vector3(0, -1, 0), 1.5);
+const groups = Object.fromEntries(LAYERS.map(([k]) => [k, []]));
+const materials = new Set();
+let edgeMat;
+
+function applyTheme() {
+  scene.background = new THREE.Color(css("--bg"));
+  if (edgeMat) edgeMat.color.set(css("--edge"));
+}
+
+const VIEWS = {
+  se: { eye: [23.2, 22, 13.0], target: [7.4, 0, -5.9], fov: 40 },
+  nw: { eye: [-8.5, 21, -24.5], target: [7.2, 0, -5.9], fov: 40 },
+  top: { eye: [7.6, 46, -6.34], target: [7.6, 0, -6.35], fov: 30 },
+  living: { eye: [6.3, 1.6, -4.5], target: [10.6, 1.15, -11.2], fov: 64 },
+  master: { eye: [4.95, 1.75, -6.65], target: [1.4, 0.55, -9.2], fov: 64 },
+};
+function setView(name) {
+  const v = VIEWS[name];
+  camera.position.set(...v.eye);
+  camera.fov = v.fov;
+  camera.updateProjectionMatrix();
+  controls.target.set(...v.target);
+  controls.update();
+  document.querySelectorAll("#views button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === name)));
+}
+window.setView = setView;
+
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener("resize", resize);
+
+const layerRow = document.getElementById("layers");
+for (const [k, zh] of LAYERS) {
+  const id = "ly-" + k;
+  const lab = document.createElement("label");
+  lab.className = "chip";
+  lab.htmlFor = id;
+  lab.innerHTML = `<input type="checkbox" id="${id}" checked> ${zh}`;
+  lab.querySelector("input").addEventListener("change", (e) => groups[k].forEach((o) => (o.visible = e.target.checked)));
+  layerRow.appendChild(lab);
+}
+document.getElementById("cut").addEventListener("change", (e) => {
+  materials.forEach((m) => { m.clippingPlanes = e.target.checked ? [cut] : []; m.needsUpdate = true; });
+});
+document.getElementById("views").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-view]");
+  if (b) setView(b.dataset.view);
+});
+
+const bin = Uint8Array.from(atob(GLB_B64), (c) => c.charCodeAt(0));
+new GLTFLoader().parse(bin.buffer, "", (gltf) => {
+  const root = gltf.scene;
+  root.rotation.x = -Math.PI / 2;          // model is Z-up (SketchUp convention)
+  edgeMat = new THREE.LineBasicMaterial({ color: css("--edge"), transparent: true, opacity: 0.55 });
+  root.traverse((o) => {
+    if (!o.isMesh) return;
+    const tag = (o.name || o.parent?.name || "").split("|")[0];
+    (groups[tag] || groups.FURN).push(o);
+    const m = o.material;
+    materials.add(m);
+    const glass = m.transparent;
+    if (glass) { m.depthWrite = false; m.side = THREE.DoubleSide; }
+    o.castShadow = !glass && tag !== "FLOR";
+    o.receiveShadow = true;
+    if (!glass && tag !== "PLNT") {
+      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry, 28), edgeMat);
+      edges.raycast = () => {};
+      o.add(edges);
+    }
+  });
+  edgeMat.clippingPlanes = [];
+  materials.add(edgeMat);
+  scene.add(root);
+  document.getElementById("loading").hidden = true;
+  applyTheme();
+  resize();
+  setView("se");
+  window.__ready = true;
+}, (err) => {
+  document.getElementById("loading").textContent = "模型載入失敗：" + err.message;
+});
+
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+applyTheme();
+resize();
+renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+</script>
