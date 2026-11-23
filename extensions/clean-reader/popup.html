@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <title>純淨閱讀</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <h1>純淨閱讀</h1>
+    <p class="sub">只整理你本來就能讀的內容</p>
+  </header>
+
+  <section class="actions">
+    <button id="reader" class="primary">閱讀模式 <kbd>Alt⇧R</kbd></button>
+    <button id="declutter">清除干擾 <kbd>Alt⇧D</kbd></button>
+    <div class="row">
+      <button id="copy">複製 Markdown</button>
+      <button id="restore">還原頁面</button>
+    </div>
+  </section>
+
+  <section class="settings" aria-label="閱讀設定">
+    <label>主題
+      <select id="theme">
+        <option value="sepia">米色</option>
+        <option value="light">白色</option>
+        <option value="dark">深色</option>
+      </select>
+    </label>
+    <label>字體
+      <select id="font">
+        <option value="serif">明體</option>
+        <option value="sans">黑體</option>
+      </select>
+    </label>
+    <label>字級 <output id="fontSizeOut"></output>
+      <input id="fontSize" type="range" min="14" max="30" step="1">
+    </label>
+    <label>行距 <output id="lineHeightOut"></output>
+      <input id="lineHeight" type="range" min="1.4" max="2.2" step="0.05">
+    </label>
+    <label>版寬 <output id="widthOut"></output>
+      <input id="width" type="range" min="520" max="1000" step="20">
+    </label>
+  </section>
+
+  <p id="status" role="status" aria-live="polite"></p>
+  <script src="popup.js"></script>
+</body>
+</html>

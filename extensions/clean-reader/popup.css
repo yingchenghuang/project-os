@@ -1,0 +1,76 @@
+:root {
+  --bg: #f6f0e4;
+  --fg: #2b2620;
+  --muted: #7a6f60;
+  --line: #e2d8c6;
+  --accent: #9a4a1c;
+  --accent-fg: #fff8ef;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17181a;
+    --fg: #dcdad5;
+    --muted: #8e8c87;
+    --line: #2f3033;
+    --accent: #e0a46e;
+    --accent-fg: #17181a;
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  width: 300px;
+  margin: 0;
+  padding: 16px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.4 system-ui, -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+h1 {
+  margin: 0;
+  font: 700 18px/1.2 "Noto Serif TC", "Songti TC", Georgia, serif;
+}
+.sub { margin: 4px 0 14px; color: var(--muted); font-size: 12px; }
+
+.actions { display: grid; gap: 8px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  cursor: pointer;
+}
+.row button { justify-content: center; }
+button:hover { border-color: var(--muted); }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); font-weight: 600; }
+kbd { font: 11px ui-monospace, Menlo, monospace; opacity: .7; }
+
+.settings {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+label { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 8px; color: var(--muted); }
+label input[type="range"] { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
+output { color: var(--fg); font-variant-numeric: tabular-nums; }
+select {
+  padding: 4px 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+}
+
+#status { min-height: 1.4em; margin: 12px 0 0; color: var(--muted); font-size: 12px; }

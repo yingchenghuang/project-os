@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "純淨閱讀 Clean Reader",
+  "version": "1.0.0",
+  "description": "把你能讀的文章變成乾淨的閱讀版面：清除彈窗、Cookie 橫幅與廣告，一鍵存成 Markdown。",
+  "permissions": ["activeTab", "scripting", "storage"],
+  "background": { "service_worker": "background.js" },
+  "action": {
+    "default_title": "純淨閱讀",
+    "default_popup": "popup.html",
+    "default_icon": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+  },
+  "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "commands": {
+    "toggle-reader": {
+      "suggested_key": { "default": "Alt+Shift+R" },
+      "description": "開啟或關閉閱讀模式"
+    },
+    "declutter": {
+      "suggested_key": { "default": "Alt+Shift+D" },
+      "description": "清除頁面干擾元素"
+    }
+  }
+}
