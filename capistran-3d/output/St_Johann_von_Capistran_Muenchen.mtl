@@ -1,0 +1,390 @@
+newmtl Brick_HardFired
+Kd 0.5490 0.2431 0.1882
+Ka 0 0 0
+Ks 0.030 0.030 0.030
+Ns 55.0
+d 1
+illum 2
+map_Kd textures/brick_hardfired.png
+map_bump -bm 0.02 textures/brick_hardfired_bump.png
+
+newmtl Brick_Unjointed_Absorber
+Kd 0.4706 0.2039 0.1725
+Ka 0 0 0
+Ks 0.020 0.020 0.020
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/brick_unjointed.png
+map_bump -bm 0.02 textures/brick_unjointed_bump.png
+
+newmtl Brick_Screen_Steingitter
+Kd 0.5490 0.2431 0.1882
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/brick_screen_alpha.png
+map_d textures/brick_screen_alpha.png
+
+newmtl Clinker_Floor_Red
+Kd 0.5725 0.2431 0.1804
+Ka 0 0 0
+Ks 0.080 0.080 0.080
+Ns 145.0
+d 1
+illum 2
+map_Kd textures/clinker_floor.png
+map_bump -bm 0.02 textures/clinker_floor_bump.png
+
+newmtl Wood_Spruce_Slat_Light
+Kd 0.7294 0.5490 0.3765
+Ka 0 0 0
+Ks 0.020 0.020 0.020
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/wood_spruce_slat.png
+
+newmtl Ceiling_Backing_Dark
+Kd 0.1333 0.1020 0.0863
+Ka 0 0 0
+Ks 0.000 0.000 0.000
+Ns 70.0
+d 1
+illum 2
+
+newmtl Wood_Soffit_Dark
+Kd 0.2745 0.1961 0.1412
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/soffit_slats_dark.png
+
+newmtl Copper_Roof_Aged
+Kd 0.3765 0.2745 0.2039
+Ka 0 0 0
+Ks 0.250 0.250 0.250
+Ns 115.0
+d 1
+illum 2
+map_Kd textures/copper_roof.png
+map_bump -bm 0.02 textures/copper_roof_bump.png
+
+newmtl Aluminium_Cornice_Riveted
+Kd 0.7059 0.7216 0.7373
+Ka 0 0 0
+Ks 0.450 0.450 0.450
+Ns 175.0
+d 1
+illum 2
+map_Kd textures/alu_fascia.png
+map_bump -bm 0.02 textures/alu_fascia_bump.png
+
+newmtl Steel_Galvanized_Rods
+Kd 0.5882 0.6039 0.6196
+Ka 0 0 0
+Ks 0.450 0.450 0.450
+Ns 190.0
+d 1
+illum 2
+
+newmtl Steel_Dark_Painted
+Kd 0.1647 0.1725 0.1843
+Ka 0 0 0
+Ks 0.150 0.150 0.150
+Ns 160.0
+d 1
+illum 2
+
+newmtl Glass_Clear
+Kd 0.8078 0.8706 0.8549
+Ka 0 0 0
+Ks 0.100 0.100 0.100
+Ns 310.0
+d 0.100
+Ni 1.52
+illum 4
+
+newmtl Glass_Clerestory
+Kd 0.7451 0.8039 0.8039
+Ka 0 0 0
+Ks 0.120 0.120 0.120
+Ns 310.0
+d 0.150
+Ni 1.52
+illum 4
+
+newmtl Plexiglas_Dome_Frosted
+Kd 0.9490 0.9569 0.9647
+Ka 0 0 0
+Ks 0.050 0.050 0.050
+Ns 100.0
+d 0.400
+Ni 1.49
+illum 4
+map_Kd textures/plexiglas_frosted.png
+
+newmtl Stained_Glass_Oberberger
+Kd 0.4706 0.4314 0.5490
+Ka 0 0 0
+Ks 0.060 0.060 0.060
+Ns 70.0
+d 0.550
+Ni 1.50
+illum 4
+map_Kd textures/stained_glass_oberberger.png
+
+newmtl Bronze_Portal_Relief
+Kd 0.2588 0.2118 0.1569
+Ka 0 0 0
+Ks 0.250 0.250 0.250
+Ns 130.0
+d 1
+illum 2
+map_Kd textures/bronze_door_relief.png
+map_bump -bm 0.02 textures/bronze_door_relief_bump.png
+
+newmtl Copper_Clad_Door
+Kd 0.2275 0.1961 0.1725
+Ka 0 0 0
+Ks 0.120 0.120 0.120
+Ns 100.0
+d 1
+illum 2
+
+newmtl Nagelfluh_Conglomerate
+Kd 0.7294 0.6902 0.6196
+Ka 0 0 0
+Ks 0.030 0.030 0.030
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/nagelfluh.png
+map_bump -bm 0.02 textures/nagelfluh_bump.png
+
+newmtl Tombak_FireGilded
+Kd 0.8392 0.6667 0.3216
+Ka 0 0 0
+Ks 0.700 0.700 0.700
+Ns 265.0
+d 1
+illum 2
+
+newmtl Bronze_Dark
+Kd 0.3608 0.2667 0.1725
+Ka 0 0 0
+Ks 0.350 0.350 0.350
+Ns 160.0
+d 1
+illum 2
+
+newmtl Wood_Ash_Pew
+Kd 0.8706 0.7529 0.5725
+Ka 0 0 0
+Ks 0.060 0.060 0.060
+Ns 130.0
+d 1
+illum 2
+map_Kd textures/wood_ash_bench.png
+
+newmtl Wood_Dark_Stain
+Kd 0.2745 0.1961 0.1412
+Ka 0 0 0
+Ks 0.050 0.050 0.050
+Ns 130.0
+d 1
+illum 2
+map_Kd textures/wood_dark_stain.png
+
+newmtl Wood_Carved_Lime
+Kd 0.6902 0.5490 0.3843
+Ka 0 0 0
+Ks 0.020 0.020 0.020
+Ns 70.0
+d 1
+illum 2
+
+newmtl Organ_Tin
+Kd 0.8078 0.8078 0.7922
+Ka 0 0 0
+Ks 0.600 0.600 0.600
+Ns 235.0
+d 1
+illum 2
+
+newmtl Plaster_White
+Kd 0.9255 0.9137 0.8863
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+
+newmtl Paint_Dark_Gallery
+Kd 0.1412 0.1294 0.1216
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+
+newmtl Concrete_Slab
+Kd 0.5961 0.5882 0.5647
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+
+newmtl Concrete_BoardFormed
+Kd 0.5882 0.5804 0.5569
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/concrete_board.png
+map_bump -bm 0.02 textures/concrete_board_bump.png
+
+newmtl Concrete_Honeycomb_CastGlass
+Kd 0.6510 0.6667 0.6431
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/honeycomb_concrete_glass.png
+
+newmtl Paving_Hex_Concrete
+Kd 0.7608 0.7216 0.6510
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/hex_pavers.png
+map_bump -bm 0.02 textures/hex_pavers_bump.png
+
+newmtl Paving_GrassGrid
+Kd 0.4314 0.5020 0.3765
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/grass_pavers.png
+
+newmtl Lawn
+Kd 0.2980 0.4549 0.1961
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/lawn.png
+
+newmtl Asphalt
+Kd 0.2824 0.2824 0.2902
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/asphalt.png
+
+newmtl Render_White
+Kd 0.9098 0.8941 0.8549
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+
+newmtl Roof_Tile_Dark
+Kd 0.3294 0.2275 0.2039
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+
+newmtl Granite_Grey
+Kd 0.5882 0.5725 0.5569
+Ka 0 0 0
+Ks 0.050 0.050 0.050
+Ns 70.0
+d 1
+illum 2
+
+newmtl Bell_Bronze
+Kd 0.4706 0.3373 0.1804
+Ka 0 0 0
+Ks 0.400 0.400 0.400
+Ns 160.0
+d 1
+illum 2
+
+newmtl Bark
+Kd 0.3451 0.2980 0.2510
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/bark.png
+
+newmtl Foliage
+Kd 0.2431 0.3922 0.1725
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+map_Kd textures/foliage.png
+
+newmtl Lamp_Aluminium
+Kd 0.7686 0.7765 0.7922
+Ka 0 0 0
+Ks 0.550 0.550 0.550
+Ns 235.0
+d 1
+illum 2
+
+newmtl Emissive_Diffuser_2700K
+Kd 1.0000 0.9255 0.8078
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+Ke 1.000 0.651 0.341
+
+newmtl Emissive_Neon_3500K
+Kd 1.0000 0.9647 0.9098
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+Ke 1.000 0.753 0.549
+
+newmtl Candle_Wax
+Kd 0.9490 0.9333 0.8784
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+
+newmtl Black_Rubber
+Kd 0.0784 0.0784 0.0784
+Ka 0 0 0
+Ks 0.040 0.040 0.040
+Ns 70.0
+d 1
+illum 2
+

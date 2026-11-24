@@ -1,0 +1,166 @@
+name,layer,type,x,y,z,dir_or_target,color_rgb,watts,spot_deg,enabled
+L_Pendant_00,11_Lights::Interior Pendants,spot,7.341,1.967,4.590,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_01,11_Lights::Interior Pendants,spot,5.374,5.374,5.890,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_02,11_Lights::Interior Pendants,spot,1.967,7.341,4.590,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_03,11_Lights::Interior Pendants,spot,-1.967,7.341,5.890,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_04,11_Lights::Interior Pendants,spot,-5.374,5.374,4.590,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_05,11_Lights::Interior Pendants,spot,-7.341,1.967,5.890,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_06,11_Lights::Interior Pendants,spot,-7.341,-1.967,4.590,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_07,11_Lights::Interior Pendants,spot,-5.374,-5.374,5.890,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_08,11_Lights::Interior Pendants,spot,-1.967,-7.341,4.590,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_09,11_Lights::Interior Pendants,spot,1.967,-7.341,5.890,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_10,11_Lights::Interior Pendants,spot,5.374,-5.374,4.590,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_11,11_Lights::Interior Pendants,spot,7.341,-1.967,5.890,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_12,11_Lights::Interior Pendants,spot,2.811,2.200,7.090,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_13,11_Lights::Interior Pendants,spot,-1.000,4.400,7.090,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_14,11_Lights::Interior Pendants,spot,-4.811,2.200,7.090,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_15,11_Lights::Interior Pendants,spot,-4.811,-2.200,7.090,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_16,11_Lights::Interior Pendants,spot,-1.000,-4.400,7.090,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_17,11_Lights::Interior Pendants,spot,2.811,-2.200,7.090,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_18,11_Lights::Interior Pendants,spot,-11.050,5.225,6.590,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_23,11_Lights::Interior Pendants,spot,-11.050,-5.225,6.590,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_24,11_Lights::Interior Pendants,spot,-11.050,-5.225,6.590,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Pendant_29,11_Lights::Interior Pendants,spot,-11.050,5.225,6.590,"(0, 0, -1)","(255, 166, 87)",75,70,True
+L_Sconce_Up_00,11_Lights::Wall Sconces,spot,10.029,6.945,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_00,11_Lights::Wall Sconces,spot,10.029,6.945,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_01,11_Lights::Wall Sconces,spot,8.159,9.473,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_01,11_Lights::Wall Sconces,spot,8.159,9.473,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_02,11_Lights::Wall Sconces,spot,5.767,11.515,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_02,11_Lights::Wall Sconces,spot,5.767,11.515,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_03,11_Lights::Wall Sconces,spot,2.978,12.967,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_03,11_Lights::Wall Sconces,spot,2.978,12.967,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_04,11_Lights::Wall Sconces,spot,-0.067,13.755,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_04,11_Lights::Wall Sconces,spot,-0.067,13.755,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_05,11_Lights::Wall Sconces,spot,-3.211,13.837,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_05,11_Lights::Wall Sconces,spot,-3.211,13.837,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_06,11_Lights::Wall Sconces,spot,-6.292,13.210,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_06,11_Lights::Wall Sconces,spot,-6.292,13.210,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_07,11_Lights::Wall Sconces,spot,-9.154,11.906,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_07,11_Lights::Wall Sconces,spot,-9.154,11.906,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_08,11_Lights::Wall Sconces,spot,-11.649,9.992,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_08,11_Lights::Wall Sconces,spot,-11.649,9.992,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_09,11_Lights::Wall Sconces,spot,10.029,-6.945,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_09,11_Lights::Wall Sconces,spot,10.029,-6.945,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_10,11_Lights::Wall Sconces,spot,8.159,-9.473,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_10,11_Lights::Wall Sconces,spot,8.159,-9.473,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_11,11_Lights::Wall Sconces,spot,5.767,-11.515,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_11,11_Lights::Wall Sconces,spot,5.767,-11.515,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_12,11_Lights::Wall Sconces,spot,2.978,-12.967,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_12,11_Lights::Wall Sconces,spot,2.978,-12.967,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_13,11_Lights::Wall Sconces,spot,-0.067,-13.755,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_13,11_Lights::Wall Sconces,spot,-0.067,-13.755,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_14,11_Lights::Wall Sconces,spot,-3.211,-13.837,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_14,11_Lights::Wall Sconces,spot,-3.211,-13.837,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_15,11_Lights::Wall Sconces,spot,-6.292,-13.210,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_15,11_Lights::Wall Sconces,spot,-6.292,-13.210,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_16,11_Lights::Wall Sconces,spot,-9.154,-11.906,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_16,11_Lights::Wall Sconces,spot,-9.154,-11.906,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Sconce_Up_17,11_Lights::Wall Sconces,spot,-11.649,-9.992,4.750,"(0, 0, 1)","(255, 177, 109)",20,50,True
+L_Sconce_Down_17,11_Lights::Wall Sconces,spot,-11.649,-9.992,4.450,"(0, 0, -1)","(255, 177, 109)",15,50,True
+L_Gallery_Neon_00,11_Lights::Gallery Neon Slot,linear,-12.685,-9.322,12.010,"(1.206, -1.224, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_01,11_Lights::Gallery Neon Slot,linear,-11.479,-10.546,12.010,"(1.345, -1.069, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_02,11_Lights::Gallery Neon Slot,linear,-10.135,-11.615,12.010,"(1.464, -0.898, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_03,11_Lights::Gallery Neon Slot,linear,-8.671,-12.513,12.010,"(1.562, -0.715, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_04,11_Lights::Gallery Neon Slot,linear,-7.109,-13.228,12.010,"(1.637, -0.521, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_05,11_Lights::Gallery Neon Slot,linear,-5.472,-13.748,12.010,"(1.688, -0.319, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_06,11_Lights::Gallery Neon Slot,linear,-3.784,-14.067,12.010,"(1.714, -0.112, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_07,11_Lights::Gallery Neon Slot,linear,-2.070,-14.180,12.010,"(1.715, 0.096, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_08,11_Lights::Gallery Neon Slot,linear,-0.355,-14.084,12.010,"(1.691, 0.302, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_09,11_Lights::Gallery Neon Slot,linear,1.336,-13.782,12.010,"(1.642, 0.504, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_10,11_Lights::Gallery Neon Slot,linear,2.978,-13.278,12.010,"(1.569, 0.699, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_11,11_Lights::Gallery Neon Slot,linear,4.547,-12.578,12.010,"(1.473, 0.884, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_12,11_Lights::Gallery Neon Slot,linear,6.020,-11.694,12.010,"(1.355, 1.055, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_13,11_Lights::Gallery Neon Slot,linear,7.375,-10.639,12.010,"(1.218, 1.212, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_14,11_Lights::Gallery Neon Slot,linear,8.592,-9.427,12.010,"(1.062, 1.35, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_15,11_Lights::Gallery Neon Slot,linear,9.655,-8.077,12.010,"(0.891, 1.468, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_16,11_Lights::Gallery Neon Slot,linear,10.546,-6.609,12.010,"(0.707, 1.565, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_17,11_Lights::Gallery Neon Slot,linear,11.253,-5.043,12.010,"(0.513, 1.639, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_18,11_Lights::Gallery Neon Slot,linear,11.765,-3.404,12.010,"(0.311, 1.689, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_19,11_Lights::Gallery Neon Slot,linear,12.076,-1.715,12.010,"(0.104, 1.715, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_20,11_Lights::Gallery Neon Slot,linear,12.180,0.000,12.010,"(-0.104, 1.715, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_21,11_Lights::Gallery Neon Slot,linear,12.076,1.715,12.010,"(-0.311, 1.689, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_22,11_Lights::Gallery Neon Slot,linear,11.765,3.404,12.010,"(-0.513, 1.639, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_23,11_Lights::Gallery Neon Slot,linear,11.253,5.043,12.010,"(-0.707, 1.565, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_24,11_Lights::Gallery Neon Slot,linear,10.546,6.609,12.010,"(-0.891, 1.468, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_25,11_Lights::Gallery Neon Slot,linear,9.655,8.077,12.010,"(-1.062, 1.35, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_26,11_Lights::Gallery Neon Slot,linear,8.592,9.427,12.010,"(-1.218, 1.212, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_27,11_Lights::Gallery Neon Slot,linear,7.375,10.639,12.010,"(-1.355, 1.055, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_28,11_Lights::Gallery Neon Slot,linear,6.020,11.694,12.010,"(-1.473, 0.884, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_29,11_Lights::Gallery Neon Slot,linear,4.547,12.578,12.010,"(-1.569, 0.699, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_30,11_Lights::Gallery Neon Slot,linear,2.978,13.278,12.010,"(-1.642, 0.504, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_31,11_Lights::Gallery Neon Slot,linear,1.336,13.782,12.010,"(-1.691, 0.302, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_32,11_Lights::Gallery Neon Slot,linear,-0.355,14.084,12.010,"(-1.715, 0.096, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_33,11_Lights::Gallery Neon Slot,linear,-2.070,14.180,12.010,"(-1.714, -0.112, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_34,11_Lights::Gallery Neon Slot,linear,-3.784,14.067,12.010,"(-1.688, -0.319, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_35,11_Lights::Gallery Neon Slot,linear,-5.472,13.748,12.010,"(-1.637, -0.521, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_36,11_Lights::Gallery Neon Slot,linear,-7.109,13.228,12.010,"(-1.562, -0.715, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_37,11_Lights::Gallery Neon Slot,linear,-8.671,12.513,12.010,"(-1.464, -0.898, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_38,11_Lights::Gallery Neon Slot,linear,-10.135,11.615,12.010,"(-1.345, -1.069, 0)","(255, 192, 140)",36,,True
+L_Gallery_Neon_39,11_Lights::Gallery Neon Slot,linear,-11.479,10.546,12.010,"(-1.206, -1.224, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_00,11_Lights::Lantern Neon Ring,linear,2.730,0.000,14.680,"(-0.208, 1.045, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_01,11_Lights::Lantern Neon Ring,linear,2.522,1.045,14.680,"(-0.592, 0.886, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_02,11_Lights::Lantern Neon Ring,linear,1.930,1.930,14.680,"(-0.886, 0.592, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_03,11_Lights::Lantern Neon Ring,linear,1.045,2.522,14.680,"(-1.045, 0.208, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_04,11_Lights::Lantern Neon Ring,linear,0.000,2.730,14.680,"(-1.045, -0.208, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_05,11_Lights::Lantern Neon Ring,linear,-1.045,2.522,14.680,"(-0.886, -0.592, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_06,11_Lights::Lantern Neon Ring,linear,-1.930,1.930,14.680,"(-0.592, -0.886, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_07,11_Lights::Lantern Neon Ring,linear,-2.522,1.045,14.680,"(-0.208, -1.045, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_08,11_Lights::Lantern Neon Ring,linear,-2.730,0.000,14.680,"(0.208, -1.045, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_09,11_Lights::Lantern Neon Ring,linear,-2.522,-1.045,14.680,"(0.592, -0.886, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_10,11_Lights::Lantern Neon Ring,linear,-1.930,-1.930,14.680,"(0.886, -0.592, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_11,11_Lights::Lantern Neon Ring,linear,-1.045,-2.522,14.680,"(1.045, -0.208, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_12,11_Lights::Lantern Neon Ring,linear,-0.000,-2.730,14.680,"(1.045, 0.208, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_13,11_Lights::Lantern Neon Ring,linear,1.045,-2.522,14.680,"(0.886, 0.592, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_14,11_Lights::Lantern Neon Ring,linear,1.930,-1.930,14.680,"(0.592, 0.886, 0)","(255, 192, 140)",36,,True
+L_Lantern_Neon_15,11_Lights::Lantern Neon Ring,linear,2.522,-1.045,14.680,"(0.208, 1.045, 0)","(255, 192, 140)",36,,True
+L_Accent_Altar_0,11_Lights::Accent,spot,-14.384,7.150,11.700,"(1.4, 0.0, 1.3)","(255, 183, 123)",150,14,True
+L_Accent_Altar_1,11_Lights::Accent,spot,-14.384,-7.150,11.700,"(1.4, 0.0, 1.3)","(255, 183, 123)",150,14,True
+L_Accent_Altar_2,11_Lights::Accent,spot,-15.813,3.701,11.700,"(1.4, 0.0, 1.3)","(255, 183, 123)",150,14,True
+L_Accent_Altar_3,11_Lights::Accent,spot,-15.813,-3.701,11.700,"(1.4, 0.0, 1.3)","(255, 183, 123)",150,14,True
+L_Accent_Tabernacle,11_Lights::Accent,spot,-9.150,12.384,11.700,"(7.8, 0, 2.2)","(255, 183, 123)",100,12,True
+L_Accent_Ambo,11_Lights::Accent,spot,-9.150,-12.384,11.700,"(-0.4, 2.75, 1.2)","(255, 183, 123)",100,12,True
+L_Accent_Madonna,11_Lights::Accent,spot,-2.000,-14.300,11.700,"(8.15, 8.517, 1.8)","(255, 183, 123)",100,12,True
+L_Baptistery_Down,11_Lights::Accent,spot,13.950,0.000,2.850,"(0, 0, -1)","(255, 177, 109)",60,60,True
+L_Choir_Loft,11_Lights::Crescent Rooms,point,14.000,0.000,5.400,"","(255, 177, 109)",40,,True
+L_Organ_Room,11_Lights::Crescent Rooms,point,14.000,0.000,8.600,"","(255, 177, 109)",40,,True
+L_Bollard_01,11_Lights::Exterior Bollards,point,-14.596,-9.380,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_02,11_Lights::Exterior Bollards,point,-11.362,-13.112,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_03,11_Lights::Exterior Bollards,point,-7.207,-15.782,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_04,11_Lights::Exterior Bollards,point,-2.469,-17.173,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_05,11_Lights::Exterior Bollards,point,2.469,-17.173,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_06,11_Lights::Exterior Bollards,point,7.207,-15.782,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_07,11_Lights::Exterior Bollards,point,11.362,-13.112,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_08,11_Lights::Exterior Bollards,point,14.596,-9.380,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_09,11_Lights::Exterior Bollards,point,16.647,-4.888,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_10,11_Lights::Exterior Bollards,point,17.350,-0.000,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_11,11_Lights::Exterior Bollards,point,16.647,4.888,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_12,11_Lights::Exterior Bollards,point,14.596,9.380,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_13,11_Lights::Exterior Bollards,point,11.362,13.112,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_14,11_Lights::Exterior Bollards,point,7.207,15.782,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_15,11_Lights::Exterior Bollards,point,2.469,17.173,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_16,11_Lights::Exterior Bollards,point,-2.469,17.173,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_17,11_Lights::Exterior Bollards,point,-7.207,15.782,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_18,11_Lights::Exterior Bollards,point,-11.362,13.112,0.460,"","(255, 177, 109)",10,,True
+L_Bollard_19,11_Lights::Exterior Bollards,point,-14.596,9.380,0.460,"","(255, 177, 109)",10,,True
+L_Soffit_Wallwash_00,11_Lights::Exterior Soffit Wallwash (optional),spot,-18.015,-2.590,12.500,"(-15.837, -2.277, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_01,11_Lights::Exterior Soffit Wallwash (optional),spot,-16.555,-7.561,12.500,"(-14.554, -6.647, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_02,11_Lights::Exterior Soffit Wallwash (optional),spot,-13.755,-11.918,12.500,"(-12.092, -10.478, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_03,11_Lights::Exterior Soffit Wallwash (optional),spot,-9.840,-15.311,12.500,"(-8.65, -13.46, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_04,11_Lights::Exterior Soffit Wallwash (optional),spot,-5.128,-17.463,12.500,"(-4.508, -15.352, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_05,11_Lights::Exterior Soffit Wallwash (optional),spot,-0.000,-18.200,12.500,"(-0.0, -16.0, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_06,11_Lights::Exterior Soffit Wallwash (optional),spot,5.128,-17.463,12.500,"(4.508, -15.352, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_07,11_Lights::Exterior Soffit Wallwash (optional),spot,9.840,-15.311,12.500,"(8.65, -13.46, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_08,11_Lights::Exterior Soffit Wallwash (optional),spot,13.755,-11.918,12.500,"(12.092, -10.478, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_09,11_Lights::Exterior Soffit Wallwash (optional),spot,16.555,-7.561,12.500,"(14.554, -6.647, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_10,11_Lights::Exterior Soffit Wallwash (optional),spot,18.015,-2.590,12.500,"(15.837, -2.277, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_11,11_Lights::Exterior Soffit Wallwash (optional),spot,18.015,2.590,12.500,"(15.837, 2.277, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_12,11_Lights::Exterior Soffit Wallwash (optional),spot,16.555,7.561,12.500,"(14.554, 6.647, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_13,11_Lights::Exterior Soffit Wallwash (optional),spot,13.755,11.918,12.500,"(12.092, 10.478, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_14,11_Lights::Exterior Soffit Wallwash (optional),spot,9.840,15.311,12.500,"(8.65, 13.46, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_15,11_Lights::Exterior Soffit Wallwash (optional),spot,5.128,17.463,12.500,"(4.508, 15.352, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_16,11_Lights::Exterior Soffit Wallwash (optional),spot,0.000,18.200,12.500,"(0.0, 16.0, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_17,11_Lights::Exterior Soffit Wallwash (optional),spot,-5.128,17.463,12.500,"(-4.508, 15.352, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_18,11_Lights::Exterior Soffit Wallwash (optional),spot,-9.840,15.311,12.500,"(-8.65, 13.46, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_19,11_Lights::Exterior Soffit Wallwash (optional),spot,-13.755,11.918,12.500,"(-12.092, 10.478, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_20,11_Lights::Exterior Soffit Wallwash (optional),spot,-16.555,7.561,12.500,"(-14.554, 6.647, 4.0)","(255, 177, 109)",40,40,False
+L_Soffit_Wallwash_21,11_Lights::Exterior Soffit Wallwash (optional),spot,-18.015,2.590,12.500,"(-15.837, 2.277, 4.0)","(255, 177, 109)",40,40,False

@@ -1,0 +1,142 @@
+[
+ {
+  "name": "01 Exterior - South-West approach",
+  "cam": [
+   -24,
+   -44,
+   1.65
+  ],
+  "tgt": [
+   0,
+   0,
+   7.0
+  ],
+  "lens": 28
+ },
+ {
+  "name": "02 Exterior - East (Steingitter band)",
+  "cam": [
+   44,
+   12,
+   1.65
+  ],
+  "tgt": [
+   0,
+   0,
+   6.5
+  ],
+  "lens": 30
+ },
+ {
+  "name": "03 Exterior - Glass portal & forecourt",
+  "cam": [
+   -27.5,
+   -9,
+   1.65
+  ],
+  "tgt": [
+   -13,
+   1,
+   5.5
+  ],
+  "lens": 24
+ },
+ {
+  "name": "04 Exterior - Under the roof (circuitus)",
+  "cam": [
+   -3.5,
+   -19.4,
+   1.65
+  ],
+  "tgt": [
+   12,
+   -12.5,
+   5.5
+  ],
+  "lens": 20
+ },
+ {
+  "name": "05 Aerial - North-West",
+  "cam": [
+   -60,
+   55,
+   45
+  ],
+  "tgt": [
+   0,
+   0,
+   6
+  ],
+  "lens": 35
+ },
+ {
+  "name": "06 Interior - Nave to altar (east)",
+  "cam": [
+   -11.6,
+   0,
+   1.6
+  ],
+  "tgt": [
+   6,
+   0,
+   5.2
+  ],
+  "lens": 17
+ },
+ {
+  "name": "07 Interior - Altar to Oberberger window (west)",
+  "cam": [
+   5.2,
+   -2.9,
+   1.7
+  ],
+  "tgt": [
+   -13,
+   0.5,
+   6.4
+  ],
+  "lens": 17
+ },
+ {
+  "name": "08 Interior - Looking up to the lantern",
+  "cam": [
+   -3.0,
+   -1.0,
+   1.6
+  ],
+  "tgt": [
+   0,
+   0,
+   16
+  ],
+  "lens": 14
+ },
+ {
+  "name": "09 Interior - Gallery +10.25 (light slot)",
+  "cam": [
+   7.6,
+   -13.25,
+   11.9
+  ],
+  "tgt": [
+   14.6,
+   -1.5,
+   11.6
+  ],
+  "lens": 16
+ },
+ {
+  "name": "10 Interior - Baptistery through the grille",
+  "cam": [
+   9.7,
+   -1.7,
+   1.65
+  ],
+  "tgt": [
+   13.9,
+   0,
+   1.1
+  ],
+  "lens": 24
+ }
+]
