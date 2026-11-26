@@ -1,0 +1,478 @@
+<title>繼光街街屋模擬</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday tool for architecture, curation and public-art study
+   IDEA a 1930s Taichung Sakae-machi street you can rebuild facade by facade, then flip to today
+   PICTURE the live three.js street: two rows of arcaded shophouses facing a narrow road
+   COLOUR lime plaster ground, soot ink, brick red lead, wash-stone grey support, painted-window green accent
+   TYPE Noto Serif TC for names and plaques, Noto Sans TC for controls
+   LAYOUT laptop: control column left 360px, street fills the rest; phone: street on top 56svh, controls below */
+:root{color-scheme:light dark;--bg:light-dark(#f3eee4,#1b1916);--panel:light-dark(#fbf8f2,#24211d);--ink:light-dark(#27211b,#efe8dc);--soft:light-dark(#6d6254,#b4a996);--line:light-dark(#ddd3c3,#3d3831);--brick:light-dark(#a3402b,#e0775d);--stone:light-dark(#cfc7b7,#57514a);--green:light-dark(#2f5b48,#7fc0a2)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "Noto Sans TC",system-ui,sans-serif;overflow:hidden}
+#app{display:grid;grid-template-columns:360px minmax(0,1fr);height:100%}
+#stage{position:relative;order:2;background:#9cc7e4;overflow:hidden}
+#view{position:absolute;inset:0}
+#view canvas{display:block;width:100%;height:100%;touch-action:none}
+.hud{position:absolute;left:0;right:0;display:flex;gap:10px;align-items:flex-start;justify-content:space-between;padding:12px max(14px,env(safe-area-inset-right,0px)) 12px 14px;pointer-events:none}
+.hud.top{top:0}
+.hud.bottom{bottom:0;align-items:flex-end;padding-bottom:max(12px,env(safe-area-inset-bottom,0px))}
+.hud>*{pointer-events:auto}
+.tag{background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13px;color:var(--ink);backdrop-filter:blur(6px)}
+#readout{font-variant-numeric:tabular-nums}
+#panel{order:1;background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:22px 20px max(28px,env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px))}
+h1{font:900 34px/1.05 "Noto Serif TC",serif;letter-spacing:-.02em;margin:0 0 8px}
+.lede{margin:0 0 16px;color:var(--soft);font-size:14px}
+h2{font:900 21px/1.2 "Noto Serif TC",serif;margin:22px 0 2px;display:flex;gap:8px;align-items:baseline}
+h2 small{font:500 13px "Noto Sans TC",sans-serif;color:var(--soft)}
+.sec{border-top:1px solid var(--line);margin-top:18px}
+.field{display:grid;gap:6px;margin-top:14px}
+.field>span,.rng>span{font-size:13px;color:var(--soft);display:flex;justify-content:space-between}
+.field output,.rng output{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+input[type=text]{font:500 16px "Noto Serif TC",serif;width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink)}
+input[type=text]:focus-visible,button:focus-visible,input[type=range]:focus-visible{outline:2px solid var(--brick);outline-offset:2px}
+.seg{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:9px;padding:3px;gap:3px;background:var(--bg)}
+.seg button{flex:1 1 auto;min-height:36px;padding:4px 9px;border:0;border-radius:6px;background:transparent;color:var(--ink);font:500 14px "Noto Sans TC",sans-serif;cursor:pointer;white-space:nowrap}
+.seg button:hover{background:color-mix(in srgb,var(--stone) 45%,transparent)}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--panel)}
+.hud .seg{background:color-mix(in srgb,var(--panel) 90%,transparent);backdrop-filter:blur(6px)}
+.hud .seg button{min-height:34px;font-size:13px}
+.chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.chips button{min-height:44px;text-align:left;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:600 14px "Noto Serif TC",serif;cursor:pointer;line-height:1.25}
+.chips button small{display:block;font:400 12px "Noto Sans TC",sans-serif;color:var(--soft)}
+.chips button[aria-pressed=true]{border-color:var(--brick);box-shadow:inset 0 0 0 1px var(--brick)}
+.sw{display:flex;gap:8px;flex-wrap:wrap}
+.sw button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);cursor:pointer}
+.sw button[aria-pressed=true]{outline:2px solid var(--brick);outline-offset:2px}
+.rng{display:grid;gap:4px;margin-top:14px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--stone)}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--stone)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;margin-top:-8px;border-radius:4px;background:var(--brick);border:2px solid var(--panel)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:4px;background:var(--brick);border:2px solid var(--panel)}
+.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px;margin-top:14px}
+.checks label{display:flex;gap:8px;align-items:center;min-height:32px;font-size:14px;cursor:pointer}
+.checks input{width:18px;height:18px;accent-color:var(--brick)}
+.acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:18px}
+.acts button{min-height:44px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:500 14px "Noto Sans TC",sans-serif;cursor:pointer}
+.acts button.main{background:var(--brick);border-color:var(--brick);color:#fff}
+.acts button:hover{filter:brightness(1.06)}
+.note{font-size:13px;color:var(--soft);margin:18px 0 0}
+.note b{color:var(--ink);font-weight:500}
+#toast{min-height:20px;font-size:13px;color:var(--green);margin-top:8px}
+@media(max-width:760px){
+body{overflow:auto}
+html,body{height:auto}
+#app{grid-template-columns:minmax(0,1fr);grid-template-rows:56svh auto;height:auto}
+#stage{order:1;position:sticky;top:0;z-index:2}
+#panel{order:2;border-right:0;border-top:1px solid var(--line);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.hint{display:none}
+h1{font-size:30px}
+}
+</style>
+
+<div id="app">
+  <section id="stage" aria-label="繼光街 3D 街景">
+    <div id="view"></div>
+    <div class="hud top">
+      <p class="tag hint">點選任一棟街屋開始編輯，拖曳旋轉，滾輪或雙指縮放</p>
+      <div class="seg" id="views" role="group" aria-label="視角">
+        <button data-view="street" aria-pressed="true">街道</button>
+        <button data-view="front" aria-pressed="false">正立面</button>
+        <button data-view="air" aria-pressed="false">鳥瞰</button>
+      </div>
+    </div>
+    <div class="hud bottom"><span class="tag" id="readout">載入中</span></div>
+  </section>
+
+  <aside id="panel">
+    <h1>繼光街街屋</h1>
+    <p class="lede">日治時期台中「榮町」連棟街屋的參數化立面模擬。調整山頭、窗型、亭仔腳與材料，再切到今日，看招牌與鐵皮如何蓋住它。</p>
+
+    <div class="seg" id="era" role="group" aria-label="年代">
+      <button data-era="1935" aria-pressed="true">1935 榮町</button>
+      <button data-era="today" aria-pressed="false">今日繼光街</button>
+    </div>
+    <label class="rng"><span>時刻 <output id="hourOut">15:00</output></span><input id="hour" type="range" min="6" max="20" step="0.25" value="15"></label>
+
+    <div class="sec">
+      <h2><span id="selName">林記吳服店</span><small id="selNo">北側第 1 棟</small></h2>
+      <div class="two">
+        <label class="field"><span>店號</span><input type="text" id="name" maxlength="6" autocomplete="off"></label>
+        <label class="field"><span>落成年號</span><input type="text" id="year" maxlength="6" autocomplete="off"></label>
+      </div>
+
+      <div class="field"><span>樣式範本</span>
+        <div class="chips" id="presets">
+          <button data-preset="baroque">大正巴洛克<small>紅磚、拱窗、渦捲山頭</small></button>
+          <button data-preset="brick">紅磚洋風<small>弧拱窗、圓拱山頭</small></button>
+          <button data-preset="showa">昭和簡化<small>洗石子、方窗、階梯山頭</small></button>
+          <button data-preset="wayo">和洋折衷<small>灰泥、三角山頭</small></button>
+        </div>
+      </div>
+
+      <div class="field"><span>山頭</span>
+        <div class="seg" data-k="gable" role="group" aria-label="山頭">
+          <button data-v="baroque">巴洛克</button><button data-v="arch">圓拱</button><button data-v="triangle">三角</button><button data-v="stepped">階梯</button><button data-v="none">無</button>
+        </div>
+      </div>
+      <label class="rng"><span>山頭高度 <output data-o="gableH"></output></span><input type="range" data-k="gableH" min="0.6" max="2.6" step="0.1"></label>
+
+      <div class="field"><span>窗型</span>
+        <div class="seg" data-k="win" role="group" aria-label="窗型">
+          <button data-v="arch">圓拱窗</button><button data-v="segment">弧拱窗</button><button data-v="rect">方窗</button>
+        </div>
+      </div>
+      <div class="two">
+        <div class="field"><span>每層窗數</span>
+          <div class="seg" data-k="wins" role="group" aria-label="每層窗數"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button></div>
+        </div>
+        <div class="field"><span>樓層</span>
+          <div class="seg" data-k="floors" role="group" aria-label="樓層"><button data-v="2">2 層</button><button data-v="3">3 層</button></div>
+        </div>
+      </div>
+
+      <label class="rng"><span>面寬 <output data-o="width"></output></span><input type="range" data-k="width" min="3.6" max="6.6" step="0.1"></label>
+      <label class="rng"><span>層高 <output data-o="floorH"></output></span><input type="range" data-k="floorH" min="3.2" max="4.4" step="0.1"></label>
+      <label class="rng"><span>亭仔腳深度 <output data-o="depth"></output></span><input type="range" data-k="depth" min="2.4" max="4.5" step="0.1"></label>
+
+      <div class="field"><span>亭仔腳開口</span>
+        <div class="seg" data-k="arcade" role="group" aria-label="亭仔腳開口"><button data-v="arch">弧拱</button><button data-v="flat">平樑</button></div>
+      </div>
+      <div class="field"><span>牆面材料</span>
+        <div class="seg" data-k="material" role="group" aria-label="牆面材料"><button data-v="brick">清水紅磚</button><button data-v="wash">洗石子</button><button data-v="plaster">灰泥粉刷</button></div>
+      </div>
+      <div class="field"><span>粉刷色</span>
+        <div class="sw" data-k="wall" role="group" aria-label="粉刷色"></div>
+      </div>
+      <div class="checks">
+        <label><input type="checkbox" data-k="pilasters">壁柱</label>
+        <label><input type="checkbox" data-k="medallion">山頭家徽</label>
+        <label><input type="checkbox" data-k="balcony">二樓陽台</label>
+        <label><input type="checkbox" data-k="baluster">花瓶欄杆</label>
+      </div>
+
+      <div class="acts">
+        <button class="main" id="applyAll">套用到整排</button>
+        <button id="randOne">隨機這一棟</button>
+        <button id="randAll">重組整條街</button>
+        <button id="copy">複製參數 JSON</button>
+      </div>
+      <p id="toast" role="status"></p>
+    </div>
+
+    <p class="note"><b>史料脈絡</b>　繼光街在日治時期屬「榮町」，鄰近台中驛，是當時最繁榮的商圈，吳服、餐廳、時計與雜貨店林立；民族路口的「西洋軒」於 1915 年開業。山頭店號依當時習慣由右至左書寫。</p>
+    <p class="note">店號與年號為示意。尺寸取台灣日治街屋常見範圍：面寬約 4 至 6 公尺，亭仔腳約 3 至 4 公尺，並非逐棟測繪。</p>
+  </aside>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+{
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const STREET=10.6,MID=5.3,BODY=14;
+const NAMES=['林記吳服店','榮町時計店','新高商行','丸三雜貨','振興布莊','金泉珈琲','協和藥房','大和寫真館','錦榮食堂','合發米店','太陽堂書局','光明眼鏡','永和茶行','共榮洋品','福住旅館','美香餅舖'];
+const YEARS=['大正九年','大正十二年','大正十四年','昭和三年','昭和五年','昭和八年','昭和十年'];
+const WALLS=['#ece3cf','#d6e2d8','#efd5c4','#dedbd2','#e6cd94'];
+const SIGNS=['越南河粉','印尼小吃','手機配件','國際電話卡','泰式奶茶','外幣兌換','卡拉OK','美甲','服飾批發','珍珠奶茶','菲律賓餐','行李箱','當舖','補習班','金飾'];
+const SIGNC=['#d62828','#f2b705','#1d4ed8','#0f8a5f','#ff6b00','#7b2cbf','#e11d74'];
+const PRESETS={
+ baroque:{gable:'baroque',gableH:2.0,win:'arch',wins:2,floors:3,arcade:'arch',material:'brick',pilasters:true,medallion:true,balcony:false,baluster:true},
+ brick:{gable:'arch',gableH:1.4,win:'segment',wins:2,floors:2,arcade:'flat',material:'brick',pilasters:true,medallion:false,balcony:true,baluster:true},
+ showa:{gable:'stepped',gableH:1.1,win:'rect',wins:3,floors:3,arcade:'flat',material:'wash',pilasters:false,medallion:false,balcony:false,baluster:false},
+ wayo:{gable:'triangle',gableH:1.3,win:'rect',wins:2,floors:2,arcade:'flat',material:'plaster',pilasters:true,medallion:true,balcony:true,baluster:false}
+};
+let seed=20261126;
+const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
+const pick=a=>a[Math.floor(rnd()*a.length)];
+const col=h=>new THREE.Color(h).convertSRGBToLinear();
+function makeHouse(i,preset){
+ const k=preset||pick(Object.keys(PRESETS));
+ return Object.assign({name:NAMES[i%NAMES.length],year:pick(YEARS),preset:k,width:+(4.2+rnd()*1.8).toFixed(1),floorH:+(3.5+rnd()*.5).toFixed(1),depth:3.6,wall:pick(WALLS)},PRESETS[k]);
+}
+
+/* ---------- renderer ---------- */
+const view=$('#view');
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.05;
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+view.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+scene.fog=new THREE.Fog(0x9cc7e4,70,230);
+const camera=new THREE.PerspectiveCamera(45,1,.1,500);
+camera.position.set(-14,1.7,8);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true;controls.maxPolarAngle=Math.PI*.495;controls.minDistance=2;controls.maxDistance=140;
+controls.target.set(0,5,0);
+const hemi=new THREE.HemisphereLight(0xdfeaf5,0x8a7a62,.6);scene.add(hemi);
+const sun=new THREE.DirectionalLight(0xfff1dc,2.4);
+sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,near:1,far:200});
+sun.shadow.bias=-.0004;sun.shadow.normalBias=.03;
+scene.add(sun,sun.target);sun.target.position.set(0,0,MID);
+
+/* ---------- textures ---------- */
+function canvasTex(S,draw){const c=document.createElement('canvas');c.width=c.height=S;draw(c.getContext('2d'),S);const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.encoding=THREE.sRGBEncoding;t.anisotropy=8;return t}
+const tr=(()=>{let s=7;return()=>(s=s*16807%2147483647)/2147483647})();
+const brickTex=canvasTex(512,(g,S)=>{g.fillStyle='#cbbfac';g.fillRect(0,0,S,S);const rows=14,cols=4,rh=S/rows,cw=S/cols;for(let r=0;r<rows;r++){const off=(r%2)*cw/2;for(let c=-1;c<=cols;c++){g.fillStyle=`hsl(${9+tr()*9},${46+tr()*14}%,${33+tr()*11}%)`;g.fillRect(c*cw+off+2,r*rh+2,cw-4,rh-4)}}for(let i=0;i<5000;i++){g.fillStyle=`rgba(${tr()<.5?0:255},${tr()<.5?0:230},0,${tr()*.08})`;g.fillRect(tr()*S,tr()*S,2,2)}});
+const washTex=canvasTex(256,(g,S)=>{g.fillStyle='#ebe7df';g.fillRect(0,0,S,S);for(let i=0;i<7000;i++){const v=150+tr()*105|0;g.fillStyle=`rgb(${v},${v-4},${v-12})`;g.beginPath();g.arc(tr()*S,tr()*S,.6+tr()*1.6,0,7);g.fill()}});
+const plasterTex=canvasTex(256,(g,S)=>{g.fillStyle='#f6f4f0';g.fillRect(0,0,S,S);for(let i=0;i<260;i++){g.fillStyle=`rgba(90,80,60,${tr()*.05})`;g.beginPath();g.arc(tr()*S,tr()*S,4+tr()*22,0,7);g.fill()}});
+const tinTex=canvasTex(128,(g,S)=>{for(let x=0;x<S;x++){const v=200+Math.sin(x/S*Math.PI*16)*40|0;g.fillStyle=`rgb(${v},${v},${v})`;g.fillRect(x,0,1,S)}for(let i=0;i<300;i++){g.fillStyle=`rgba(120,60,20,${tr()*.15})`;g.fillRect(tr()*S,tr()*S,2+tr()*6,1+tr()*10)}});
+const groundTex=canvasTex(256,(g,S)=>{g.fillStyle='#fff';g.fillRect(0,0,S,S);for(let i=0;i<4000;i++){const v=180+tr()*75|0;g.fillStyle=`rgb(${v},${v},${v})`;g.fillRect(tr()*S,tr()*S,2,2)}});
+groundTex.repeat.set(60,60);
+const texCache={};
+function textTex(key,w,h,draw){if(texCache[key])return texCache[key];const c=document.createElement('canvas');c.width=w;c.height=h;draw(c.getContext('2d'),w,h);const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;t.anisotropy=8;return texCache[key]=t}
+const SERIF='"Noto Serif TC","Songti TC","PMingLiU",serif';
+function plaqueTex(name,year){return textTex('pl'+name+year,512,200,(g,w,h)=>{g.fillStyle='#efe9dc';g.fillRect(0,0,w,h);g.strokeStyle='#6b5a44';g.lineWidth=6;g.strokeRect(12,12,w-24,h-24);const ch=[...name].reverse(),n=ch.length,fs=Math.min(104,(w-60)/n*.92);g.fillStyle='#2a2119';g.font=`900 ${fs}px ${SERIF}`;g.textAlign='center';g.textBaseline='middle';ch.forEach((c,i)=>g.fillText(c,30+(w-60)*(i+.5)/n,h*.42));g.font=`600 34px ${SERIF}`;g.fillStyle='#4e4130';g.fillText([...year].reverse().join(''),w/2,h*.8)})}
+function crestTex(ch){return textTex('cr'+ch,128,128,(g,w)=>{g.fillStyle='#efe9dc';g.fillRect(0,0,w,w);g.strokeStyle='#2a2119';g.lineWidth=6;g.beginPath();g.arc(64,64,52,0,7);g.stroke();g.fillStyle='#2a2119';g.font=`900 62px ${SERIF}`;g.textAlign='center';g.textBaseline='middle';g.fillText(ch,64,68)})}
+function boardTex(name){return textTex('bd'+name,512,128,(g,w,h)=>{g.fillStyle='#3b2516';g.fillRect(0,0,w,h);g.strokeStyle='#c9a24e';g.lineWidth=4;g.strokeRect(8,8,w-16,h-16);const ch=[...name].reverse(),n=ch.length,fs=Math.min(80,(w-40)/n*.88);g.fillStyle='#e2bf6a';g.font=`900 ${fs}px ${SERIF}`;g.textAlign='center';g.textBaseline='middle';ch.forEach((c,i)=>g.fillText(c,20+(w-40)*(i+.5)/n,h*.54))})}
+function vSignTex(text,bg){return textTex('vs'+text+bg,128,512,(g,w,h)=>{g.fillStyle=bg;g.fillRect(0,0,w,h);g.fillStyle=bg==='#f2b705'?'#1a1a1a':'#fff';const ch=[...text],n=ch.length,fs=Math.min(96,(h-40)/n*.9);g.font=`700 ${fs}px "Noto Sans TC",sans-serif`;g.textAlign='center';g.textBaseline='middle';ch.forEach((c,i)=>g.fillText(c,w/2,20+(h-40)*(i+.5)/n))})}
+function hSignTex(text,bg){return textTex('hs'+text+bg,512,96,(g,w,h)=>{g.fillStyle=bg;g.fillRect(0,0,w,h);g.fillStyle=bg==='#f2b705'?'#1a1a1a':'#fff';g.font=`700 58px "Noto Sans TC",sans-serif`;g.textAlign='center';g.textBaseline='middle';g.fillText(text,w/2,h*.54)})}
+
+/* ---------- materials ---------- */
+const mats={};
+function mat(kind,c){const k=kind+c;if(mats[k])return mats[k];let m;
+ if(kind==='brick')m=new THREE.MeshStandardMaterial({map:brickTex,roughness:.92});
+ else if(kind==='wash')m=new THREE.MeshStandardMaterial({map:washTex,color:col(c),roughness:.88});
+ else if(kind==='plaster')m=new THREE.MeshStandardMaterial({map:plasterTex,color:col(c),roughness:.95});
+ else m=new THREE.MeshStandardMaterial({color:col(c),roughness:.75});
+ return mats[k]=m}
+const glassMat=new THREE.MeshStandardMaterial({color:col('#24343a'),roughness:.12,metalness:.7,emissive:col('#ffb45e'),emissiveIntensity:0});
+const shopMat=new THREE.MeshStandardMaterial({color:col('#1d1711'),roughness:1,emissive:col('#ffae55'),emissiveIntensity:0});
+const lampMat=new THREE.MeshStandardMaterial({color:col('#fff4dc'),emissive:col('#ffcf7a'),emissiveIntensity:.2});
+const signMats=new Set();
+const woodWin=mat('solid','#3e5446'),woodDoor=mat('solid','#6a4428'),tile=mat('solid','#4f4b47'),body=mat('plaster','#d8d1c3');
+const markMat=new THREE.MeshBasicMaterial({color:col('#e0592f')});
+const balGeo=new THREE.LatheGeometry([[0,0],[.065,0],[.065,.05],[.04,.09],[.035,.14],[.075,.28],[.05,.42],[.032,.5],[.05,.55],[.06,.6],[0,.62]].map(p=>new THREE.Vector2(p[0],p[1])),10);
+const dentGeo=new THREE.BoxGeometry(.09,.11,.1);
+balGeo.userData.shared=dentGeo.userData.shared=true;
+
+/* ---------- geometry helpers ---------- */
+function mesh(geo,m,g,x=0,y=0,z=0){const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=o.receiveShadow=true;g.add(o);return o}
+const box=(w,h,d,m,g,x,y,z)=>mesh(new THREE.BoxGeometry(w,h,d),m,g,x,y,z);
+const ext=(s,d,b=0)=>new THREE.ExtrudeGeometry(s,{depth:d,bevelEnabled:b>0,bevelThickness:b,bevelSize:b,bevelSegments:1,curveSegments:18});
+function winShape(style,cx,y0,ww,wh){const s=new THREE.Shape(),a=ww/2;s.moveTo(cx-a,y0);s.lineTo(cx+a,y0);
+ if(style==='arch'){s.lineTo(cx+a,y0+wh-a);s.absarc(cx,y0+wh-a,a,0,Math.PI,false)}
+ else if(style==='segment'){const r=ww*.16;s.lineTo(cx+a,y0+wh-r);s.quadraticCurveTo(cx,y0+wh+r,cx-a,y0+wh-r)}
+ else{s.lineTo(cx+a,y0+wh);s.lineTo(cx-a,y0+wh)}
+ s.lineTo(cx-a,y0);return s}
+function gableShape(t,gw,gh){const s=new THREE.Shape(),a=gw/2;s.moveTo(-a,0);
+ if(t==='arch'){s.lineTo(-a,gh*.4);s.absellipse(0,gh*.4,a,gh*.6,Math.PI,0,true)}
+ else if(t==='triangle'){s.lineTo(-a,gh*.3);s.lineTo(0,gh);s.lineTo(a,gh*.3)}
+ else if(t==='stepped'){[[-a,.45],[-a*.64,.45],[-a*.64,.73],[-a*.3,.73],[-a*.3,1],[a*.3,1],[a*.3,.73],[a*.64,.73],[a*.64,.45],[a,.45]].forEach(p=>s.lineTo(p[0],p[1]*gh))}
+ else{s.lineTo(-a,gh*.28);s.bezierCurveTo(-a*.98,gh*.55,-a*.62,gh*.42,-a*.55,gh*.62);s.bezierCurveTo(-a*.48,gh*.85,-a*.2,gh*.78,-a*.12,gh*.9);s.bezierCurveTo(-a*.08,gh*.97,-a*.04,gh,0,gh);s.bezierCurveTo(a*.04,gh,a*.08,gh*.97,a*.12,gh*.9);s.bezierCurveTo(a*.2,gh*.78,a*.48,gh*.85,a*.55,gh*.62);s.bezierCurveTo(a*.62,gh*.42,a*.98,gh*.55,a,gh*.28)}
+ s.lineTo(a,0);s.lineTo(-a,0);return s}
+function instanced(geo,m,g,pts,sy=1){if(!pts.length)return;const im=new THREE.InstancedMesh(geo,m,pts.length),o=new THREE.Object3D();pts.forEach((p,i)=>{o.position.set(p[0],p[1],p[2]);o.scale.set(1,sy,1);o.updateMatrix();im.setMatrixAt(i,o.matrix)});im.castShadow=im.receiveShadow=true;g.add(im)}
+function balRow(g,m,x0,x1,y,z,h){const pts=[];const n=Math.floor((x1-x0)/.22);for(let i=0;i<n;i++)pts.push([x0+(x1-x0)*(i+.5)/n,y,z]);instanced(balGeo,m,g,pts,h/.62)}
+
+/* ---------- one shophouse ---------- */
+function heights(p){const H1=p.floorH,fh=p.floorH*.92;return{H1,fh,T:H1+(p.floors-1)*fh}}
+function buildHouse(p,idx){
+ const g=new THREE.Group(),a=p.width/2,{H1,fh,T}=heights(p),D=p.depth;
+ const wallM=p.material==='brick'?mat('brick',''):p.material==='wash'?mat('wash',p.wall):mat('plaster',p.wall);
+ const trimM=p.material==='wash'?mat('wash','#f4f1ea'):mat('wash','#d9d3c6');
+ const pw=.32,ix=a-pw;
+ // arcade front frame
+ const f=new THREE.Shape();f.moveTo(-a,0);f.lineTo(-ix,0);
+ if(p.arcade==='arch'){const sp=H1-1.2;f.lineTo(-ix,sp);f.quadraticCurveTo(0,sp+1.4,ix,sp)}else{f.lineTo(-ix,H1-.6);f.lineTo(ix,H1-.6)}
+ f.lineTo(ix,0);f.lineTo(a,0);f.lineTo(a,H1);f.lineTo(-a,H1);f.lineTo(-a,0);
+ mesh(ext(f,.45),wallM,g,0,0,-.45);
+ [-1,1].forEach(s=>{box(pw+.06,.5,.52,trimM,g,s*(a-pw/2-.03),.25,-.22);box(pw+.08,.16,.54,trimM,g,s*(a-pw/2-.04),p.arcade==='arch'?H1-1.12:H1-.68,-.22)});
+ // arcade floor, ceiling mass, shop body
+ box(p.width,.15,D,mat('wash','#c8ab8c'),g,0,.075,-D/2);
+ box(p.width,T-H1,D-.3,body,g,0,H1+(T-H1)/2,-.3-(D-.3)/2);
+ box(p.width,T,BODY-D,body,g,0,T/2,-D-(BODY-D)/2);
+ // roof behind parapet
+ const rf=new THREE.Shape();rf.moveTo(-a,0);rf.lineTo(a,0);rf.lineTo(0,1.6);rf.lineTo(-a,0);mesh(ext(rf,BODY-2),tile,g,0,T,-BODY);
+ // shopfront
+ const z0=-D+.1,dw=p.width-1;
+ [-1,1].forEach(s=>box(.5,H1,.2,trimM,g,s*(a-.25),H1/2,z0));
+ box(p.width,.9,.2,wallM===mats.brick?trimM:wallM,g,0,H1-.45,z0);
+ const sh=mesh(new THREE.PlaneGeometry(dw,H1-.9),shopMat,g,0,(H1-.9)/2,-D+.02);sh.castShadow=false;
+ const n=Math.max(4,Math.round(dw/.5)),pwd=dw/n,dh=H1-1.6;
+ for(let i=0;i<n;i++){if(Math.abs(i-(n-1)/2)<1)continue;box(pwd-.03,dh,.05,woodDoor,g,-dw/2+pwd*(i+.5),.15+dh/2,z0+(i%2?.04:0))}
+ box(dw,.06,.06,woodWin,g,0,H1-1.45,z0);box(dw,.06,.06,woodWin,g,0,H1-.92,z0);
+ for(let i=1;i<Math.round(dw/.3);i++)box(.04,.5,.04,woodWin,g,-dw/2+i*dw/Math.round(dw/.3),H1-1.18,z0);
+ const bd=mesh(new THREE.PlaneGeometry(Math.min(2.6,dw*.7),.5),new THREE.MeshStandardMaterial({map:boardTex(p.name),roughness:.6}),g,0,H1-.45,z0+.11);bd.castShadow=false;
+ const lamp=mesh(new THREE.SphereGeometry(.13,12,8),lampMat,g,0,H1-.28,-D/2);lamp.castShadow=false;
+ box(.02,.2,.02,woodWin,g,0,H1-.1,-D/2);
+ // belt course at first floor line
+ box(p.width+.06,.28,.6,trimM,g,0,H1,-.2);
+ // upper floors
+ const inner=p.width-(p.pilasters?1:.5);
+ for(let k=1;k<p.floors;k++){
+  const y0=H1+(k-1)*fh,wall=new THREE.Shape();wall.moveTo(-a,0);wall.lineTo(a,0);wall.lineTo(a,fh);wall.lineTo(-a,fh);wall.lineTo(-a,0);
+  const ww=Math.min(1.15,inner/p.wins*.58),wh=Math.min(fh*.6,ww*2.1),sill=.88;
+  const xs=[...Array(p.wins)].map((_,i)=>-inner/2+inner*(i+.5)/p.wins);
+  xs.forEach(cx=>wall.holes.push(winShape(p.win,cx,sill,ww,wh)));
+  const fl=new THREE.Group();fl.position.y=y0;g.add(fl);
+  mesh(ext(wall,.3),wallM,fl,0,0,-.3);
+  xs.forEach(cx=>{
+   const ring=winShape(p.win,cx,sill-.09,ww+.18,wh+.18);ring.holes.push(winShape(p.win,cx,sill,ww,wh));mesh(ext(ring,.07),trimM,fl,0,0,0);
+   const gl=mesh(new THREE.ShapeGeometry(winShape(p.win,cx,sill,ww,wh)),glassMat,fl,0,0,-.2);gl.castShadow=false;
+   const spring=p.win==='arch'?wh-ww/2:wh*.62;
+   box(.06,wh,.06,woodWin,fl,cx,sill+wh/2,-.16);box(ww,.06,.06,woodWin,fl,cx,sill+spring,-.16);
+   box(ww+.34,.1,.22,trimM,fl,cx,sill-.14,.06);
+   if(p.win==='rect')box(ww+.42,.14,.24,trimM,fl,cx,sill+wh+.2,.06);else box(.2,.3,.14,trimM,fl,cx,sill+wh+.02,.05);
+  });
+  if(k>1)box(p.width,.16,.2,trimM,fl,0,0,.06);
+  if(k===1&&p.balcony){box(p.width-.6,.14,.75,trimM,fl,0,.07,.37);balRow(fl,trimM,-a+.45,a-.45,.14,.66,.72);box(p.width-.6,.09,.12,trimM,fl,0,.9,.66);[-1,1].forEach(s=>box(.18,.35,.6,trimM,fl,s*(a-.6),-.15,.3))}
+ }
+ if(p.pilasters)[-1,1].forEach(s=>{box(.36,T-H1,.12,p.material==='brick'?wallM:trimM,g,s*(a-.2),H1+(T-H1)/2,.06);box(.46,.2,.2,trimM,g,s*(a-.2),T-.18,.08)});
+ // cornice + dentils
+ box(p.width+.2,.24,.5,trimM,g,0,T+.12,-.15);box(p.width+.08,.12,.34,trimM,g,0,T-.06,-.12);
+ const dp=[];for(let x=-a+.15;x<a-.1;x+=.2)dp.push([x,T-.17,.08]);instanced(dentGeo,trimM,g,dp);
+ // parapet + gable
+ const PH=.95,gw=p.gable==='none'?0:Math.max(2.2,p.width*.6),top=T+.24;
+ const segs=gw?[[-a+.15,-gw/2],[gw/2,a-.15]]:[[-a+.15,a-.15]];
+ segs.forEach(([x0,x1])=>{if(x1-x0<.25)return;const L=x1-x0,cx=(x0+x1)/2;
+  box(L,.14,.3,trimM,g,cx,top+.07,-.12);box(L,.12,.34,trimM,g,cx,top+PH-.06,-.12);
+  if(p.baluster)balRow(g,trimM,x0+.12,x1-.12,top+.14,-.12,PH-.26);else{box(L,PH-.26,.24,wallM,g,cx,top+PH/2,-.14);if(L>.9)box(L-.4,PH-.56,.04,trimM,g,cx,top+PH/2,0)}
+ });
+ [-a+.15,a-.15].forEach(x=>{box(.3,PH+.1,.36,trimM,g,x,top+PH/2+.05,-.12);box(.36,.1,.42,trimM,g,x,top+PH+.12,-.12)});
+ if(gw){
+  const gh=PH+p.gableH,gs=gableShape(p.gable,gw,gh);
+  mesh(ext(gs,.3,.02),p.material==='brick'?trimM:wallM,g,0,top,-.32);
+  mesh(ext(gableShape(p.gable,gw+.18,gh+.1),.22),trimM,g,0,top-.02,-.3);
+  const ph=Math.min(.62,gh*.32),pl=mesh(new THREE.PlaneGeometry(gw*.6,ph),new THREE.MeshStandardMaterial({map:plaqueTex(p.name,p.year),roughness:.8}),g,0,top+.18+ph/2,.03);pl.castShadow=false;
+  if(p.medallion&&gh>1.6){const r=Math.min(.3,gh*.13),my=top+gh*.64;const cr=mesh(new THREE.CircleGeometry(r,28),new THREE.MeshStandardMaterial({map:crestTex([...p.name][0]),roughness:.8}),g,0,my,.04);cr.castShadow=false;mesh(new THREE.TorusGeometry(r+.03,.04,8,28),trimM,g,0,my,.04)}
+  if(p.gable==='baroque')[-1,1].forEach(s=>{mesh(new THREE.TorusGeometry(.16,.06,8,20),trimM,g,s*gw/2,top+gh*.3,.02)});
+  mesh(new THREE.SphereGeometry(.12,14,10),trimM,g,0,top+gh+.16,-.15);box(.22,.12,.22,trimM,g,0,top+gh+.02,-.15);
+ }
+ g.userData.modern=buildModern(p,idx,{a,H1,T});g.add(g.userData.modern);
+ g.traverse(o=>{if(o.isMesh)o.userData.house=idx});
+ return g;
+}
+function buildModern(p,idx,{a,H1,T}){
+ const m=new THREE.Group(),r=(()=>{let s=idx*7919+13;return()=>(s=s*16807%2147483647)/2147483647})();
+ const bg=SIGNC[Math.floor(r()*SIGNC.length)],tx=SIGNS[Math.floor(r()*SIGNS.length)];
+ const vh=Math.min(T-H1-.4,4.2),vm=new THREE.MeshStandardMaterial({map:vSignTex(tx,bg),emissive:col('#ffffff'),emissiveMap:vSignTex(tx,bg),emissiveIntensity:.05}),side=mat('solid',bg);signMats.add(vm);
+ box(.2,vh,.9,[vm,vm,side,side,side,side],m,(r()<.5?-1:1)*(a-.4),H1+.3+vh/2,.62);
+ const bg2=SIGNC[Math.floor(r()*SIGNC.length)],tx2=SIGNS[Math.floor(r()*SIGNS.length)],hm=new THREE.MeshStandardMaterial({map:hSignTex(tx2,bg2),emissive:col('#ffffff'),emissiveMap:hSignTex(tx2,bg2),emissiveIntensity:.05});signMats.add(hm);
+ box(p.width-.06,.8,.08,[side,side,side,side,hm,side],m,0,H1-.25,.06);
+ if(r()<.5){const tm=new THREE.MeshStandardMaterial({map:tinTex,color:col(['#c9ccc8','#9fb6b0','#d8d2c2'][Math.floor(r()*3)]),roughness:.55,metalness:.35});box(p.width-.3,T-H1-.2,.06,tm,m,0,H1+.15+(T-H1-.2)/2,.2)}
+ else{const ac=mat('solid','#e9e9e4');box(.8,.5,.4,ac,m,-a*.4,H1+.55,.25);if(p.floors>2)box(.8,.5,.4,ac,m,a*.3,H1+p.floorH*.92+.55,.25)}
+ const bike=mat('solid',['#2b2b2b','#a8323c','#e8e3d6','#2c5a8a'][Math.floor(r()*4)]);for(let i=0;i<2;i++)box(.35,.9,1.7,bike,m,-a*.6+i*a*.7,.6,-p.depth*.45);
+ return m;
+}
+
+/* ---------- street ---------- */
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(400,400),new THREE.MeshStandardMaterial({map:groundTex,color:col('#b9a98a'),roughness:1}));
+ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;scene.add(ground);
+const curbM=mat('wash','#bdb6a8');[0.15,STREET-.15].forEach(z=>{const c=box(80,.16,.3,curbM,scene,0,.08,z)});
+const lanes=new THREE.Group();scene.add(lanes);for(let x=-38;x<38;x+=4)box(2,.01,.12,mat('solid','#f1efe6'),lanes,x,.01,MID);
+const poles={old:new THREE.Group(),now:new THREE.Group()};const poleWrap=new THREE.Group();poleWrap.add(poles.old,poles.now);scene.add(poleWrap);
+for(let x=-30;x<=30;x+=12){box(.22,8,.22,mat('solid','#5c4832'),poles.old,x,4,.55);box(1.6,.1,.1,mat('solid','#5c4832'),poles.old,x,7.4,.55);
+ box(.16,7,.16,mat('solid','#6d7377'),poles.now,x+6,3.5,.55);box(.12,.12,1.8,mat('solid','#6d7377'),poles.now,x+6,7,1.4);const l=mesh(new THREE.BoxGeometry(.4,.12,.5),lampMat,poles.now,x+6,6.92,2.2);l.castShadow=false}
+const wires=new THREE.Group();poles.old.add(wires);[-0.6,0.6].forEach(o=>box(60,.02,.02,mat('solid','#2a2622'),wires,0,7.45,.55+o*.02));
+const people=new THREE.Group();scene.add(people);
+[[-6,-1.6,'#3d3a36'],[3,-2.2,'#5a4b3b'],[9,7.9,'#2f3d4a'],[-12,6,'#6b3b2e']].forEach(([x,z,c])=>{const pm=mat('solid',c);mesh(new THREE.CylinderGeometry(.2,.24,1.35,10),pm,people,x,.68,z);mesh(new THREE.SphereGeometry(.13,10,8),mat('solid','#c9a184'),people,x,1.5,z)});
+
+const houses=[];const rows=[[],[]];
+let sel=3,era='1935',hour=15,curView='street';
+function initHouses(){seed=20261126;houses.length=0;rows[0]=[];rows[1]=[];const order=['baroque','brick','showa','wayo'];
+ for(let i=0;i<16;i++){const p=makeHouse(i,i<8?order[i%4]:null);houses.push({p,g:null,row:i<8?0:1});rows[i<8?0:1].push(i)}}
+const marker=new THREE.Mesh(new THREE.BoxGeometry(1,.04,.14),markMat);marker.geometry.userData.shared=true;
+function dispose(g){g.traverse(o=>{if(o.geometry&&!o.geometry.userData.shared)o.geometry.dispose();if(o.material)[].concat(o.material).forEach(m=>signMats.delete(m))})}
+function build(i){const h=houses[i];if(h.g){scene.remove(h.g);dispose(h.g)}h.g=buildHouse(h.p,i);if(h.row)h.g.rotation.y=Math.PI;scene.add(h.g);h.g.userData.modern.visible=era==='today';if(i===sel)attachMarker()}
+function layout(){rows.forEach((r,ri)=>{const W=r.reduce((s,i)=>s+houses[i].p.width,0);let x=-W/2;r.forEach(i=>{const h=houses[i];h.g.position.set(ri?-(x+h.p.width/2):x+h.p.width/2,0,ri?STREET:0);x+=h.p.width})})}
+function attachMarker(){const h=houses[sel];marker.scale.x=h.p.width-.2;marker.position.set(0,.17,.4);h.g.add(marker)}
+function buildAll(){houses.forEach((_,i)=>build(i));layout()}
+
+/* ---------- light & era ---------- */
+const SKY={day:col('#9cc7e4'),dusk:col('#e7a571'),night:col('#0e1a2e')};
+const bgCol=new THREE.Color();
+function applyLight(){
+ const phi=Math.PI*(hour-6)/12,s=Math.sin(phi),day=hour<=18?Math.max(0,Math.min(1,s*1.5)):0,e=Math.max(.03,s)*68*Math.PI/180;
+ const v=new THREE.Vector3(-Math.cos(phi)*Math.cos(e),Math.sin(e),.55*Math.cos(e)+.35).normalize();
+ sun.position.copy(v.multiplyScalar(80)).add(sun.target.position);
+ sun.intensity=hour<=18?2.6*Math.pow(day,.6):0;
+ sun.color.setHSL(.09,.9,.5+.45*day);
+ hemi.intensity=.18+.5*day;hemi.color.set(day>.1?0xdfeaf5:0x6f86b8);
+ if(day>.35)bgCol.copy(SKY.dusk).lerp(SKY.day,(day-.35)/.65);else bgCol.copy(SKY.night).lerp(SKY.dusk,day/.35);
+ scene.background=bgCol;scene.fog.color.copy(bgCol);
+ const night=1-Math.min(1,day*2.2);
+ glassMat.emissiveIntensity=night*.7;shopMat.emissiveIntensity=night*1.1;lampMat.emissiveIntensity=.2+night*2.2;
+ signMats.forEach(m=>m.emissiveIntensity=.05+night*.9);
+ $('#stage').style.background='#'+bgCol.clone().convertLinearToSRGB().getHexString();
+ const hh=Math.floor(hour),mm=Math.round((hour-hh)*60);$('#hourOut').textContent=`${hh}:${String(mm).padStart(2,'0')}`;
+}
+function applyEra(){const now=era==='today';houses.forEach(h=>h.g.userData.modern.visible=now);poles.old.visible=!now;poles.now.visible=now;lanes.visible=now;
+ ground.material.color.copy(col(now?'#4a4a4c':'#b9a98a'));$$('#era button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.era===era))}
+
+/* ---------- camera views ---------- */
+let tween=null;const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function setView(v){curView=v;const h=houses[sel],{T}=heights(h.p),x=h.g.position.x,n=h.row?-1:1,z0=h.row?STREET:0;
+ houses.forEach(o=>o.g.visible=v!=='front'||o.row===h.row);people.visible=poleWrap.visible=v!=='front';
+ let pos,tg;
+ if(v==='front'){const d=(T+h.p.gableH+2)/2/Math.tan(22.5*Math.PI/180)*1.12;pos=[x,T/2+1.2,z0+n*d];tg=[x,T/2+1.2,z0]}
+ else if(v==='air'){pos=[x-24,24,MID+n*26];tg=[x,3,MID]}
+ else{pos=[x-n*12,1.65,z0+n*7.8];tg=[x+n*1.5,T*.5,z0]}
+ const from={p:camera.position.clone(),t:controls.target.clone()},to={p:new THREE.Vector3(...pos),t:new THREE.Vector3(...tg)};
+ tween={from,to,t0:performance.now(),dur:reduce?1:950};
+ $$('#views button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.view===v));
+}
+
+/* ---------- UI ---------- */
+const sw=$('.sw');sw.innerHTML=WALLS.map(c=>`<button data-v="${c}" style="background:${c}" aria-label="粉刷色 ${c}"></button>`).join('');
+const units={gableH:'m',width:'m',floorH:'m',depth:'m'};
+function syncUI(){const p=houses[sel].p;
+ $('#selName').textContent=p.name;$('#selNo').textContent=`${houses[sel].row?'南':'北'}側第 ${rows[houses[sel].row].indexOf(sel)+1} 棟`;
+ $('#name').value=p.name;$('#year').value=p.year;
+ $$('[data-k]').forEach(el=>{const k=el.dataset.k,v=p[k];
+  if(el.matches('.seg,.sw'))el.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v)===String(v)));
+  else if(el.type==='checkbox')el.checked=!!v;
+  else if(el.type==='range'){el.value=v;$(`[data-o="${k}"]`).textContent=`${(+v).toFixed(1)} ${units[k]}`}});
+ $$('#presets button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.preset===p.preset));
+ const{T}=heights(p);$('#readout').textContent=`${p.name}｜面寬 ${p.width.toFixed(1)} m｜簷高 ${T.toFixed(1)} m｜山頭頂 ${(T+.24+(p.gable==='none'?.95:.95+p.gableH)).toFixed(1)} m｜亭仔腳 ${p.depth.toFixed(1)} m`;
+}
+let pend=new Set(),raf=0;
+function queue(i){pend.add(i);if(!raf)raf=requestAnimationFrame(()=>{raf=0;pend.forEach(build);pend.clear();layout();applyLight();syncUI()})}
+function setP(k,v){const p=houses[sel].p;p[k]=v;if(k!=='name'&&k!=='year')p.preset=null;queue(sel)}
+$$('.seg[data-k],.sw[data-k]').forEach(el=>el.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const v=b.dataset.v;setP(el.dataset.k,/^\d+$/.test(v)?+v:v)}));
+$$('input[type=range][data-k]').forEach(el=>el.addEventListener('input',()=>setP(el.dataset.k,+el.value)));
+$$('input[type=checkbox][data-k]').forEach(el=>el.addEventListener('change',()=>setP(el.dataset.k,el.checked)));
+['name','year'].forEach(k=>$('#'+k).addEventListener('input',e=>{const v=e.target.value.trim();if(!v)return;houses[sel].p[k]=v;queue(sel);fontsFor(v)}));
+$('#presets').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;Object.assign(houses[sel].p,PRESETS[b.dataset.preset],{preset:b.dataset.preset});queue(sel)});
+$('#era').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;era=b.dataset.era;applyEra()});
+$('#hour').addEventListener('input',e=>{hour=+e.target.value;applyLight()});
+$('#views').addEventListener('click',e=>{const b=e.target.closest('button');if(b)setView(b.dataset.view)});
+const toast=t=>{$('#toast').textContent=t;clearTimeout(toast.t);toast.t=setTimeout(()=>$('#toast').textContent='',2600)};
+$('#applyAll').addEventListener('click',()=>{const p=houses[sel].p,r=houses[sel].row;rows[r].forEach(i=>{if(i===sel)return;const q=houses[i].p;Object.assign(q,{gable:p.gable,gableH:p.gableH,win:p.win,wins:p.wins,floors:p.floors,floorH:p.floorH,depth:p.depth,arcade:p.arcade,material:p.material,pilasters:p.pilasters,medallion:p.medallion,balcony:p.balcony,baluster:p.baluster,preset:p.preset});queue(i)});toast('已套用到同一側整排，店號與面寬保留各自原樣');});
+$('#randOne').addEventListener('click',()=>{seed=(Date.now()%100000)+7;const n=makeHouse(sel);n.name=houses[sel].p.name;houses[sel].p=n;queue(sel)});
+$('#randAll').addEventListener('click',()=>{seed=(Date.now()%100000)+11;houses.forEach((h,i)=>{const nm=h.p.name;h.p=makeHouse(i);h.p.name=nm;queue(i)});toast('整條街已重組')});
+$('#copy').addEventListener('click',async()=>{const txt=JSON.stringify(houses[sel].p,null,2);try{await navigator.clipboard.writeText(txt);toast('已複製這棟的參數')}catch(e){toast('瀏覽器不允許複製，請改用參數截圖')}});
+
+/* picking */
+const ray=new THREE.Raycaster(),ptr=new THREE.Vector2();let down=null;
+renderer.domElement.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);
+renderer.domElement.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;const r=renderer.domElement.getBoundingClientRect();ptr.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(ptr,camera);
+ const hit=ray.intersectObjects(houses.filter(h=>h.g.visible).map(h=>h.g),true).find(x=>x.object.userData.house!==undefined&&x.object.visible);
+ if(hit&&hit.object.userData.house!==sel){sel=hit.object.userData.house;attachMarker();syncUI()}});
+
+/* fonts → redraw text textures */
+function fontsFor(t){if(!document.fonts)return;const spec=`900 40px "Noto Serif TC"`;if(document.fonts.check(spec,t))return;document.fonts.load(spec,t).then(()=>{Object.keys(texCache).forEach(k=>{if(k.includes(t)){texCache[k].dispose();delete texCache[k]}});houses.forEach((h,i)=>{if(h.p.name.includes(t)||h.p.year.includes(t))queue(i)})}).catch(()=>{})}
+function fontsAll(){if(!document.fonts)return;const all=NAMES.join('')+YEARS.join('')+'0123456789';Promise.all([document.fonts.load(`900 40px "Noto Serif TC"`,all),document.fonts.load(`600 30px "Noto Serif TC"`,all),document.fonts.load(`700 40px "Noto Sans TC"`,SIGNS.join(''))]).then(()=>{Object.keys(texCache).forEach(k=>{texCache[k].dispose();delete texCache[k]});signMats.clear();buildAll();applyLight();applyEra()}).catch(()=>{})}
+
+/* loop */
+function resize(){const w=view.clientWidth,h=view.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w<520?58:45;camera.updateProjectionMatrix()}
+const ro=new ResizeObserver(resize);ro.observe(view);
+function loop(now){requestAnimationFrame(loop);if(tween){const k=Math.min(1,(now-tween.t0)/tween.dur),q=k<.5?2*k*k:1-(-2*k+2)**2/2;camera.position.lerpVectors(tween.from.p,tween.to.p,q);controls.target.lerpVectors(tween.from.t,tween.to.t,q);if(k>=1)tween=null}controls.update();renderer.render(scene,camera)}
+
+function start(d){initHouses();if(d&&Array.isArray(d.ps)&&d.ps.length===16)d.ps.forEach((p,i)=>houses[i].p=Object.assign(houses[i].p,p));if(d&&Number.isInteger(d.sel))sel=d.sel;if(d&&d.era)era=d.era;if(d&&d.hour)hour=d.hour;
+ $('#hour').value=hour;buildAll();applyEra();applyLight();syncUI();resize();setView('street');tween&&(tween.dur=1);requestAnimationFrame(loop);fontsAll()}
+window.claude?.hot?.snapshot?.(()=>({ps:houses.map(h=>h.p),sel,era,hour}));
+window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.hot?.data??{});
+}
+</script>
